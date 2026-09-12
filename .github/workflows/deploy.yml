@@ -5,7 +5,7 @@ on:
     branches: [deploy/gcp, main, master]
 
 env:
-  REGION: southamerica-east1
+  REGION: us-central1
   SERVICE_NAME: makis
   REPO_NAME: makis-registry
   PROJECT_ID: angelic-throne-502610-v3
