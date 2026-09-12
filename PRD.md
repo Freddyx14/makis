@@ -206,6 +206,32 @@ El diseño separa tres artefactos que suelen mezclarse:
 
 Esta separación es importante para el fundador: puede preguntar “qué está bloqueado hoy” sin leer toda la historia, y luego abrir la evidencia si necesita entender el porqué.
 
+### 5.3 Founder Council
+
+El cockpit diario responde qué hacer dentro de un contexto. El Founder Council responde una pregunta distinta: **qué merece el tiempo y la firma del fundador en toda la empresa**.
+
+El producto de esta corrida son decisiones, no documentos ni gráficos. Si Makis no detecta una decisión accionable, debe decirlo de forma explícita en lugar de rellenar la pantalla con análisis.
+
+| Modo | Pregunta que responde | Salida |
+|---|---|---|
+| Consejo | ¿Qué necesita mi firma esta semana? | máximo tres decisiones con recomendación y costo de esperar |
+| Decidir una | ¿Cómo cierro esta decisión concreta? | opciones reales, evidencia, recomendación y condición para reabrirla |
+| Capital | ¿Dónde está el dinero y qué gasto no se gana su lugar? | cobrado, por cobrar, gasto recurrente y dato desconocido claramente marcado |
+| Portafolio | ¿Qué frente merece horas y cuál se pausa? | veredicto propuesto para clientes, iniciativas y proyectos |
+
+Cada decisión propuesta tiene un contrato:
+
+1. Una pregunta que pueda responderse.
+2. Un solo dueño y una fecha próxima.
+3. Evidencia enlazada o una incertidumbre declarada.
+4. Dos o tres opciones reales, incluyendo no hacer nada cuando aplique.
+5. Una recomendación, su porqué y qué tendría que cambiar para reabrirla.
+6. El costo de esperar.
+
+Makis propone. El fundador decide. Después de la firma, Makis registra qué se decidió, por qué y qué archivos o acciones deben actualizarse. Nunca transforma una recomendación en una acción viva sin la aprobación correspondiente.
+
+El Council también busca contradicciones operativas: una decisión declarada que no se ejecutó, una regla que entra en conflicto con un documento vivo o una prioridad que consume horas sin justificarlo. Esas contradicciones merecen atención antes de crear otra tarea.
+
 ## 6. Límites y guardrails
 
 - Makis puede leer, sintetizar, preparar y recomendar dentro de las fuentes autorizadas.
@@ -253,6 +279,7 @@ makis/
 - La vista de una entidad muestra su account.md, decisiones, actividad y documentos sin crear copias.
 - El fundador puede abrir un cliente, recibir un briefing read-only y cerrarlo con estado, actividad y handoff propuestos.
 - Makis impide que una skill use información de dos clientes o proyectos a la vez salvo que el fundador abra una vista de cartera explícita.
+- El Founder Council devuelve como máximo tres decisiones accionables, cada una con evidencia, recomendación, dueño y costo de esperar.
 - Una acción se edita y se aprueba; su resultado queda trazado en el Markdown correspondiente.
 - El sistema propone un aprendizaje operativo, por ejemplo un patrón de cobro tardío o una reunión que siempre requiere preparación.
 - El demo muestra que el valor depende del contexto conectado, no de una conversación aislada.
