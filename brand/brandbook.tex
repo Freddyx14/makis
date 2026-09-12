@@ -1,0 +1,196 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[landscape,margin=15mm]{geometry}
+\usepackage{fontspec}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{multicol}
+\usepackage{microtype}
+\pagestyle{empty}
+\setmainfont{Avenir Next}
+\newfontfamily\displayfont{Space Grotesk}
+\definecolor{orange}{HTML}{F35B1C}
+\definecolor{ink}{HTML}{1D1A17}
+\definecolor{cream}{HTML}{FFF3ED}
+\definecolor{mist}{HTML}{F7F6F5}
+\definecolor{line}{HTML}{E7E5E1}
+\definecolor{green}{HTML}{16794A}
+\definecolor{red}{HTML}{B42318}
+\newcommand{\Mark}{\begin{tikzpicture}[baseline=-.55ex,scale=.18]\foreach \x/\y/\h in {0/0/4,2.7/1.2/5.2,5.4/0/4,8.1/1.2/5.2}{\fill[orange,rounded corners=1.0] (\x,\y) rectangle +(2,\h);}\end{tikzpicture}}
+\newcommand{\Brand}{\Mark\hspace{4pt}{\displayfont\bfseries\fontsize{25}{25}\selectfont mark\textcolor{orange}{ ai}}}
+\newcommand{\PageLabel}[2]{\noindent\textcolor{orange}{\footnotesize\bfseries #1}\hfill\textcolor{ink!55}{\footnotesize #2}\par\vspace{5mm}}
+\newcommand{\Title}[1]{{\displayfont\bfseries\fontsize{34}{38}\selectfont\color{ink}#1\par}}
+\newcommand{\Sub}[1]{{\fontsize{13}{19}\selectfont\color{ink!75}#1\par}}
+\newtcolorbox{card}[1][]{colback=mist,colframe=line,arc=4mm,boxrule=.4pt,left=5mm,right=5mm,top=4mm,bottom=4mm,#1}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\begin{document}
+
+% 1 Cover
+\thispagestyle{empty}\vspace*{17mm}
+\begin{center}
+{\Mark\par}\vspace{7mm}
+{\displayfont\bfseries\fontsize{55}{55}\selectfont mark\textcolor{orange}{ ai}\par}
+\vspace{5mm}{\displayfont\fontsize{23}{28}\selectfont Your agency, in context.\par}
+\vspace{20mm}
+\begin{tikzpicture}[scale=.55]\foreach \x/\y/\h in {0/0/3,2.2/.9/4,4.4/0/3,6.6/.9/4}{\fill[orange,rounded corners=1.4] (\x,\y) rectangle +(1.6,\h);}\end{tikzpicture}
+\vfill
+{\color{ink!65}\small Essential brandbook · v1.0 · September 12, 2026}
+\end{center}\newpage
+
+% 2 Use
+\PageLabel{01 · HOW TO USE IT}{MARK AI / BRAND SYSTEM}
+\Title{A guide for making the brand feel like one system.}
+\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}Y@{\hspace{8mm}}Y@{\hspace{8mm}}Y@{}}
+\begin{card}\textcolor{orange}{\bfseries 01}\par\vspace{2mm}\displayfont\bfseries Product\par\small Use the tokens in UI, flows and modules. White is the surface; orange signals a decision or action.\end{card}&
+\begin{card}\textcolor{orange}{\bfseries 02}\par\vspace{2mm}\displayfont\bfseries Marketing\par\small Use one concrete idea per asset. Explain work Mark AI prepares, not AI “magic.”\end{card}&
+\begin{card}\textcolor{orange}{\bfseries 03}\par\vspace{2mm}\displayfont\bfseries Team\par\small Read \texttt{brand-context.md} before creating a new surface. It is the source of truth.\end{card}
+\end{tabularx}
+\vfill\Sub{This PDF is a quick reference. Tokens, rules and decisions live in \texttt{brand-context.md}.}\newpage
+
+% 3 Strategy
+\PageLabel{02 · ESSENCE}{STRATEGY}
+\Title{Context should not live\newline only in the founder’s head.}
+\vspace{7mm}
+\begin{tabularx}{\textwidth}{@{}Y@{\hspace{10mm}}Y@{}}
+\begin{card}[colback=cream,colframe=cream]\textcolor{orange}{\bfseries PURPOSE}\par\vspace{3mm}\large Give agency founders a clear environment for turning scattered work into informed decisions.\end{card}&
+\begin{card}\textcolor{orange}{\bfseries PROMISE}\par\vspace{3mm}\large Know what needs your decision, and why.\end{card}
+\end{tabularx}
+\vspace{8mm}
+\begin{tabularx}{\textwidth}{@{}Y Y Y@{}}
+\textcolor{orange}{\bfseries WHY}\par\small Founders should not carry the company’s context alone.&
+\textcolor{orange}{\bfseries HOW}\par\small Connect documents, departments and agents around one shared truth.&
+\textcolor{orange}{\bfseries WHAT}\par\small Cockpit and modules for commercial, delivery, finance, legal, campaigns and capacity.
+\end{tabularx}
+\vfill\Sub{Internal mantra: \textbf{Context. Decide. Move.}}\newpage
+
+% 4 Audience
+\PageLabel{03 · POSITIONING}{AUDIENCE}
+\Title{For the person still\newline holding the whole company together.}
+\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}Y@{\hspace{8mm}}Y@{}}
+\begin{card}\textcolor{orange}{\bfseries THE FOUNDER}\par\vspace{3mm}\displayfont\bfseries Sees the whole company\par\small Clients, cash, risks, contracts, delivery and priorities. Needs judgment, not another tab.\end{card}&
+\begin{card}\textcolor{orange}{\bfseries THE FUNCTIONAL OWNER}\par\vspace{3mm}\displayfont\bfseries Executes deeply\par\small Enters a module with client context ready. Works, leaves evidence and returns state to the cockpit.\end{card}
+\end{tabularx}
+\vspace{7mm}
+\begin{card}[colback=ink,colframe=ink]\color{white}\displayfont\bfseries\large Mark AI is not a chat, CRM, task board or standalone campaign manager.\par\vspace{2mm}\small It is the connected operating environment for an agency.\end{card}
+\vfill\newpage
+
+% 5 Personality voice
+\PageLabel{04 · PERSONALITY}{SAGE + CREATOR}
+\Title{Clear enough to decide.\newline Capable enough to act.}
+\vspace{5mm}
+\begin{tabularx}{\textwidth}{@{}Y Y Y Y@{}}
+\begin{card}\textcolor{orange}{\bfseries DIRECT}\par\small but not abrupt\par\vspace{2mm}\footnotesize “Three decisions need your attention.”\end{card}&
+\begin{card}\textcolor{orange}{\bfseries EXPERT}\par\small but not condescending\par\vspace{2mm}\footnotesize “Here is the evidence behind the recommendation.”\end{card}&
+\begin{card}\textcolor{orange}{\bfseries WARM}\par\small but not chatty\par\vspace{2mm}\footnotesize “You can review the draft before it is sent.”\end{card}&
+\begin{card}\textcolor{orange}{\bfseries EXACT}\par\small but not bureaucratic\par\vspace{2mm}\footnotesize “Invoice overdue by 12 days.”\end{card}
+\end{tabularx}
+\vspace{8mm}\Sub{Avoid: “revolutionary,” “effortless,” “AI magic,” and “fully autonomous.” Always name the source, decision and human control.}\vfill\newpage
+
+% 6 logo
+\PageLabel{05 · LOGO}{SYSTEM}
+\Title{A mark built from parts\newline that work together.}
+\vspace{7mm}
+\begin{card}[colback=white,colframe=line]\centering\vspace{6mm}\Brand\vspace{6mm}\end{card}
+\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}Y Y Y@{}}
+\textcolor{orange}{\bfseries SYMBOL}\par\small Four rounded modules form an abstract M.\par\vspace{4mm}\fcolorbox{orange}{orange}{\parbox[c][13mm][c]{13mm}{\centering\Mark}}&
+\textcolor{orange}{\bfseries SPACE}\par\small Leave at least one module width around the lockup.&
+\textcolor{orange}{\bfseries SIZE}\par\small Lockup: 88 px digital. Symbol: 24 px digital.
+\end{tabularx}
+\vfill\Sub{Master files: \texttt{assets/logo/svg/}.}\newpage
+
+% 7 Logo rules
+\PageLabel{06 · LOGO}{WHAT NOT TO DO}
+\Title{The symbol works because\newline it remains one unit.}
+\vspace{8mm}
+\begin{tabularx}{\textwidth}{@{}Y Y Y Y@{}}
+\begin{card}\textcolor{red}{\bfseries NO}\par\small Stretch or compress\end{card}&
+\begin{card}\textcolor{red}{\bfseries NO}\par\small Rotate the mark\end{card}&
+\begin{card}\textcolor{red}{\bfseries NO}\par\small Recolor modules\end{card}&
+\begin{card}\textcolor{red}{\bfseries NO}\par\small Add shadows or effects\end{card}\\[5mm]
+\begin{card}\textcolor{red}{\bfseries NO}\par\small Separate the four pieces\end{card}&
+\begin{card}\textcolor{red}{\bfseries NO}\par\small Use orange for body text\end{card}&
+\begin{card}\textcolor{red}{\bfseries NO}\par\small Place on busy imagery\end{card}&
+\begin{card}\textcolor{red}{\bfseries NO}\par\small Rebuild it as ordinary text\end{card}
+\end{tabularx}
+\vfill\Sub{Use the right variant: color on light, reverse on ink, and monochrome only when production requires it.}\newpage
+
+% 8 Palette
+\PageLabel{07 · COLOR}{PALETTE}
+\Title{Orange to signal.\newline White to think.}
+\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}Y@{\hspace{5mm}}Y@{\hspace{5mm}}Y@{\hspace{5mm}}Y@{\hspace{5mm}}Y@{}}
+\colorbox{orange}{\parbox[c][30mm][c]{\linewidth}{\centering\color{white}\bfseries Mark Orange\par\small \#F35B1C}}&
+\colorbox{ink}{\parbox[c][30mm][c]{\linewidth}{\centering\color{white}\bfseries Cinder Ink\par\small \#1D1A17}}&
+\colorbox{cream}{\parbox[c][30mm][c]{\linewidth}{\centering\color{ink}\bfseries Apricot Wash\par\small \#FFF3ED}}&
+\colorbox{mist}{\parbox[c][30mm][c]{\linewidth}{\centering\color{ink}\bfseries Mist\par\small \#F7F6F5}}&
+\fcolorbox{line}{white}{\parbox[c][30mm][c]{\linewidth}{\centering\color{ink}\bfseries White\par\small \#FFFFFF}}
+\end{tabularx}
+\vspace{8mm}
+\begin{tabularx}{\textwidth}{@{}Y Y Y@{}}
+\textcolor{orange}{\bfseries 75\%}\par\small white and neutrals for surfaces&
+\textcolor{orange}{\bfseries 20\%}\par\small ink for information and hierarchy&
+\textcolor{orange}{\bfseries 5\%}\par\small orange for action, state and signature
+\end{tabularx}
+\vfill\Sub{Accessibility: Ink on white = AAA. White on Mark Orange = AA. Do not use orange for body text on white.}\newpage
+
+% 9 Type
+\PageLabel{08 · TYPE}{SYSTEM}
+\Title{Structure for fast reading.\newline Space for better thinking.}
+\vspace{5mm}
+{\displayfont\bfseries\fontsize{34}{38}\selectfont Space Grotesk\par}
+\small Headlines, metrics and key labels. Approved weights: 500, 600 and 700.\par\vspace{5mm}
+{\fontsize{25}{30}\selectfont Avenir Next\par}
+\small Reading, interfaces and descriptions. Approved weights: 400, 500 and 600.\par\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}Y Y Y Y Y@{}}
+\displayfont\bfseries\fontsize{30}{30}\selectfont Display&\displayfont\bfseries\fontsize{24}{24}\selectfont H1&\displayfont\bfseries\fontsize{19}{19}\selectfont H2&\displayfont\bfseries\fontsize{15}{15}\selectfont H3&\fontsize{12}{17}\selectfont Body
+\end{tabularx}
+\vfill\Sub{Scale 1.25 · 16 px body · headings at -0.03 em tracking · body line-height 1.55.}\newpage
+
+% 10 UI
+\PageLabel{09 · INTERFACE}{THE COCKPIT}
+\Title{UI is not decoration.\newline It is how you see what matters.}
+\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}Y@{\hspace{7mm}}Y@{\hspace{7mm}}Y@{}}
+\begin{card}[colback=cream,colframe=cream]\textcolor{orange}{\bfseries DECISION}\par\vspace{3mm}\displayfont\bfseries Renew Delta proposal\par\small Approval is due Friday. View evidence →\end{card}&
+\begin{card}\textcolor{orange}{\bfseries CLIENT}\par\vspace{3mm}\displayfont\bfseries Awasqa Boni\par\small Milestone: brandbook review. Blocker: pending feedback.\end{card}&
+\begin{card}\textcolor{orange}{\bfseries FINANCE}\par\vspace{3mm}\displayfont\bfseries S/ 4,200 receivable\par\small Invoice overdue by 12 days. Prepare follow-up →\end{card}
+\end{tabularx}
+\vspace{7mm}\Sub{Purposeful cards, clear labels and one primary action. Orange marks priority, approval or next step: it does not fill the screen.}\vfill\newpage
+
+% 11 Applications
+\PageLabel{10 · APPLICATIONS}{CONNECTED DEPARTMENTS}
+\Title{One brand. Six areas.\newline The same operating reality.}
+\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}Y Y Y@{}}
+\begin{card}\textcolor{orange}{\bfseries COMMERCIAL}\par\small Leads, proposals and close.\end{card}&
+\begin{card}\textcolor{orange}{\bfseries DELIVERY}\par\small Milestones, meetings and handoffs.\end{card}&
+\begin{card}\textcolor{orange}{\bfseries FINANCE}\par\small Cash, collections and obligations.\end{card}\\[4mm]
+\begin{card}\textcolor{orange}{\bfseries LEGAL}\par\small Contracts, IP and review.\end{card}&
+\begin{card}\textcolor{orange}{\bfseries CAMPAIGNS}\par\small Brief, production, media and results.\end{card}&
+\begin{card}\textcolor{orange}{\bfseries CAPACITY}\par\small Owners and workload.\end{card}
+\end{tabularx}
+\vspace{8mm}\begin{card}[colback=ink,colframe=ink]\color{white}\displayfont\bfseries\large Every department inherits the master identity. No department gets its own logo or palette.\end{card}
+\vfill\newpage
+
+% 12 Quick reference
+\PageLabel{11 · QUICK REFERENCE}{MARK AI / v1.0}
+\Title{The essentials, on one page.}
+\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}Y@{\hspace{8mm}}Y@{\hspace{8mm}}Y@{}}
+\begin{card}\textcolor{orange}{\bfseries COLOR}\par\small Primary: \#F35B1C\par Ink: \#1D1A17\par Surface: \#FFFFFF\end{card}&
+\begin{card}\textcolor{orange}{\bfseries TYPE}\par\small Headings: Space Grotesk\par Body: Avenir Next\par Base: 16 px\end{card}&
+\begin{card}\textcolor{orange}{\bfseries VOICE}\par\small Clear · warm · exact\par “Your agency, in context.”\end{card}
+\end{tabularx}
+\vspace{7mm}
+\begin{tabularx}{\textwidth}{@{}Y Y@{}}
+\textcolor{green}{\bfseries YES}\par\small Show evidence, name the next decision, use white surfaces and orange intentionally.&
+\textcolor{red}{\bfseries NO}\par\small Talk about magic, use AI as a substitute for judgment, create department sub-brands or flood UI with orange.
+\end{tabularx}
+\vfill\begin{center}\Brand\end{center}
+\end{document}
