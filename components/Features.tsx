@@ -23,50 +23,50 @@ import {
 const steps = [
   {
     id: 1,
-    title: "Ingresa la empresa",
-    description: "URL, objetivo, presupuesto y archivos de marca.",
+    title: "Connect your agency",
+    description: "Website, operating context, documents and approved sources.",
     icon: Building2,
   },
   {
     id: 2,
-    title: "Director de Marketing IA",
-    description: "Comprende el negocio, crea el brief maestro y coordina a todo el equipo de agentes.",
+    title: "Founder cockpit",
+    description: "Turns connected context into priorities, evidence and approval-ready actions.",
     icon: BrainCircuit,
   },
 ];
 
 const investigate = [
-  { title: "Agente investigador", desc: "Analiza mercado, competidores, tendencias y audiencia con fuentes visibles.", icon: Search },
-  { title: "Agente estratega", desc: "Define campaña, oferta, buyer persona, canales, KPIs y distribución del presupuesto.", icon: Target },
+  { title: "Commercial", desc: "Leads, discovery, proposals and the next conversation needed to close.", icon: Search },
+  { title: "Finance and legal", desc: "Cash, collections, contracts and approval boundaries in one operating view.", icon: Target },
 ];
 
 const produce = [
-  { title: "Contenido", desc: "Copies, artículos, guiones y calendario.", icon: PenTool },
-  { title: "Creativo", desc: "Anuncios, banners y variaciones visuales.", icon: Palette },
-  { title: "Landing", desc: "Página, formulario y medición de conversiones.", icon: LayoutTemplate },
-  { title: "Distribución", desc: "Email, redes, SEO y publicidad.", icon: Share2 },
+  { title: "Delivery", desc: "Milestones, meetings, owners and handoffs for active clients.", icon: PenTool },
+  { title: "Campaigns", desc: "Briefs, creative production, review and performance by client.", icon: Palette },
+  { title: "Documents", desc: "Readable Markdown rendered as the operating interface.", icon: LayoutTemplate },
+  { title: "Capacity", desc: "Clear ownership and a view of workload across the team.", icon: Share2 },
 ];
 
 const execute = [
-  { title: "Centro de aprobación", desc: "El cliente revisa toda la campaña, comenta y aprueba presupuesto, mensajes y creatividades.", icon: CheckCircle2, highlight: true },
-  { title: "Ejecución con APIs y MCP", desc: "Publica, programa, crea campañas pausadas, actualiza CRM y conserva un registro auditable.", icon: TerminalSquare },
+  { title: "Human approval", desc: "Review drafts, contracts, budgets and external actions before anything moves.", icon: CheckCircle2, highlight: true },
+  { title: "Auditable execution", desc: "Every approved action keeps an evidence trail and updates the canonical record.", icon: TerminalSquare },
 ];
 
 const monitor = [
-  { id: 6, title: "Monitoreo en vivo", desc: "Leads, conversiones, CPL, CAC y ROAS por canal.", icon: Activity },
-  { id: 7, title: "Optimización inteligente", desc: "Detecta anomalías y propone qué anuncio, segmento o contenido mejorar.", icon: Settings2 },
-  { id: 8, title: "Reporte narrado", desc: "Explica resultados, aprendizajes y plan de la siguiente semana.", icon: FileAudio },
+  { id: 6, title: "Founder Council", desc: "At most three decisions with evidence, owner and cost of waiting.", icon: Activity },
+  { id: 7, title: "Focused work", desc: "Open one client context, work without leakage, and leave a useful handoff.", icon: Settings2 },
+  { id: 8, title: "Operational memory", desc: "Outcomes become documented learnings for the next iteration.", icon: FileAudio },
 ];
 
 export function Features() {
   return (
-    <section id="como-funciona" className="w-full max-w-7xl mx-auto px-6 py-24 relative z-20">
+    <section id="how-it-works" className="w-full max-w-7xl mx-auto px-6 py-24 relative z-20">
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-5xl font-serif text-brand-light mb-4">
-          El flujo de trabajo automatizado
+          One connected operating system
         </h2>
         <p className="text-brand-light/70 text-lg max-w-2xl mx-auto">
-          Un ecosistema completo de agentes coordinados para escalar tu marketing.
+          Departments do deep work. The founder sees what needs a decision.
         </p>
       </div>
 
@@ -104,7 +104,7 @@ export function Features() {
               <span className="bg-brand-accent/20 text-brand-accent w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 3
               </span>
-              Investigar y decidir
+              Understand and decide
             </h4>
             {investigate.map((item, idx) => (
               <motion.div
@@ -130,7 +130,7 @@ export function Features() {
               <span className="bg-brand-accent/20 text-brand-accent w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 4
               </span>
-              Producir campaña 360
+              Run the agency
             </h4>
             <div className="grid grid-cols-2 gap-4">
               {produce.map((item, idx) => (
@@ -156,7 +156,7 @@ export function Features() {
               <span className="bg-brand-accent/20 text-brand-accent w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 5
               </span>
-              Aprobar y ejecutar
+              Approve and move
             </h4>
             {execute.map((item, idx) => (
               <motion.div
@@ -214,7 +214,7 @@ export function Features() {
         >
           <RefreshCw className="w-5 h-5" />
           <span className="text-sm font-medium tracking-wide">
-            Los resultados actualizan la memoria y generan el siguiente experimento
+            Outcomes update the operating memory and improve the next decision
           </span>
         </motion.div>
       </div>
@@ -223,9 +223,9 @@ export function Features() {
       <div className="mt-16 text-center">
         <Link
           href="/nueva"
-          className="inline-flex items-center gap-2 bg-brand-accent hover:bg-brand-accent-hover text-brand-dark px-8 py-4 rounded-full font-medium text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg"
+          className="inline-flex items-center gap-2 bg-brand-accent hover:bg-brand-accent-hover text-white px-8 py-4 rounded-full font-medium text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg"
         >
-          Empezar ahora
+          Start workspace
           <ArrowRight className="w-5 h-5" />
         </Link>
       </div>

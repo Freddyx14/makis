@@ -19,7 +19,7 @@ and [change record](docs/changes/2026-09-12-next-campaign-laboratory.md).
 
 ## The agentic operating environment for agency founders
 
-> **Version:** 6.3.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)
+> **Version:** 6.4.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)
 > **Team:** Maki Acevichado (Joel Espinoza · Diego Celis · Miluska R. · Freddy Ñañez)
 > **Stack:** FastAPI · OpenAI Agents SDK · Google Workspace MCP · Exa Search · Resend · SQLite · Chart.js
 
@@ -91,6 +91,8 @@ External-impact actions such as sending email, publishing content, spending budg
 ~~~text
 workspace/<agency>/
 ├── account.md                   # current state, owner, blockers, next milestone
+├── company/                     # company profile, strategy, goals and KPIs
+├── people/                      # team members, roles, capacity and hiring context
 ├── operations/                  # pulse, meetings, tasks and procedures
 ├── clients/<slug>/account.md    # client agreement, state and next step
 ├── finance/                     # cash, collections, expenses and assumptions
@@ -102,6 +104,91 @@ workspace/<agency>/
 ~~~
 
 SQLite indexes artifacts, versions, sources, approvals and events. It never replaces documents; it makes the right context retrievable and explainable.
+
+### 3.4 Company foundation: strategy, people and performance
+
+Before Mark AI can make useful recommendations, it needs more than a website and inbox. It needs the operating facts that define how the agency intends to win, who is responsible for work, and how progress is measured.
+
+| Canonical artifact | Contains | Used by |
+|---|---|---|
+| `company/profile.md` | legal and commercial name, offer, markets, ownership, operating model, systems and source links | onboarding, account view and any agent needing company context |
+| `company/strategy.md` | positioning, ICP, service lines, differentiators, strategic bets and explicit non-goals | Founder Council, Commercial, Campaigns and portfolio decisions |
+| `company/goals.md` | quarterly or annual outcomes, owner, due date, leading indicators and confidence | founder cockpit and weekly pulse |
+| `company/kpis.md` | metric definition, source, cadence, baseline, target and latest value | Finance, Commercial, Delivery and reporting |
+| `people/<slug>/profile.md` | role, responsibilities, skills, availability, capacity, manager and access boundary | Capacity, delivery assignment and hiring decisions |
+| `people/roles.md` | the roles the agency needs, current owner, accountability and coverage gap | founder planning and team design |
+| `people/hiring.md` | approved hiring need, rationale, budget, priority, stage and decision owner | capacity planning and Founder Council |
+
+This is a lightweight people-and-capacity system, not an HRIS. Mark AI does not need sensitive employment records to help a founder operate. It needs only the minimum professional information required to understand responsibility, availability, capability and workload.
+
+### 3.5 Goals, KPIs and strategy-to-work traceability
+
+Every active initiative, client engagement and campaign should link upward to a strategic goal and, when measurable, to one or more KPIs. The system must show the chain instead of forcing the founder to infer it:
+
+~~~mermaid
+flowchart LR
+    A["Strategy and non-goals"] --> B["Company goal"]
+    B --> C["KPI and target"]
+    C --> D["Initiative or client work"]
+    D --> E["Owner, action and evidence"]
+    E --> F["Outcome and learning"]
+    F -. revise .-> A
+~~~
+
+| Requirement | Product behavior |
+|---|---|
+| Metric honesty | A KPI without a source, baseline or update date is visibly marked incomplete, not treated as a live performance claim. |
+| Goal ownership | Every goal has one accountable owner, a time horizon and a next review date. |
+| Leading and lagging indicators | A revenue outcome can be paired with leading indicators such as qualified opportunities, proposal conversion, delivery cycle time or collection days. |
+| Capacity-aware planning | Mark AI flags a goal or client commitment when no role has capacity to own it. |
+| Privacy boundary | Team profiles avoid personal or sensitive HR data. Access follows role necessity and is auditable. |
+| Learning loop | A missed target produces an evidence-backed learning or decision proposal, not automatic changes to strategy. |
+
+### 3.6 Second Brain: company knowledge graph
+
+Mark AI includes a **Second Brain** module: a founder-facing, Obsidian-like map of the company’s knowledge. It is not a decorative network chart or a separate database. The graph is a visual and conversational view over the same linked Markdown artifacts that run the agency.
+
+The founder can explore how a client relates to a contract, campaign, meeting, decision, owner, KPI, goal, source document or open question. Clicking a node opens its readable source and its evidence trail; the graph never becomes an opaque summary with no canonical document behind it.
+
+| Node type | Examples | Canonical Markdown location |
+|---|---|---|
+| Entity | agency, client, lead, partner, team member | `company/`, `clients/`, `people/` |
+| Concept | service line, project, campaign, goal, KPI, decision, role | `company/`, `operations/`, `decisions.md` |
+| Source | meeting note, call transcript, proposal, contract, brief, report | `sources/` or linked original document |
+| Question | open decision, missing information, founder follow-up | `questions/` or `decisions.md` |
+
+Markdown `[[links]]` create graph edges. Typed frontmatter records what a node is, who owns it, its confidence, access scope, source references and last update. SQLite may index nodes and edges for fast rendering, filtering and search, but it does not become a competing source of truth.
+
+#### Second Brain experience
+
+| View | Founder outcome |
+|---|---|
+| Graph canvas | see clusters and relationships across clients, company strategy, people and work |
+| Entity page | understand one client, person, project or decision with backlinks, sources and current state |
+| Context path | answer “how is this connected?” by showing a trace such as goal → client → campaign → KPI → source |
+| Knowledge inbox | review candidate nodes, links or questions inferred from new sources before they become canonical |
+| Hot context | see the most recently changed or currently relevant nodes without loading the full graph |
+| Graph health | find broken links, orphan nodes, stale accounts and unlinked sources; never delete automatically |
+
+#### Ingestion and maintenance workflow
+
+~~~mermaid
+flowchart LR
+    A["Approved source or document"] --> B["Extract entities, concepts, sources and questions"]
+    B --> C["Create or propose linked Markdown nodes"]
+    C --> D["Update index and hot context"]
+    D --> E["Index nodes and edges for UI"]
+    E --> F["Founder explores graph or asks a question"]
+    F --> G["Graph health lint and learning proposal"]
+~~~
+
+1. Ingest only authorized sources and never infer facts not contained in a source.
+2. Create or update nodes using a typed Markdown schema and generous `[[links]]`.
+3. Refresh the index and hot context after each accepted source change.
+4. Lint broken links and orphans, but report them rather than deleting content.
+5. Keep client, company and role access boundaries when rendering nodes or traversing relationships.
+
+The initial demo graph can use deterministic sample nodes from the company profile, a client, a goal, a meeting and a campaign. Production graph ingestion starts read-only and becomes write-capable only through reviewed diffs.
 
 ## 4. One platform, departments with different depth
 
@@ -156,6 +243,7 @@ Approved UI changes update the related Markdown and write a new version. There a
 | Decisions separate from tasks | `decisions.md` stores question, owner, options, impact and rationale | decisions are not mistaken for tasks |
 | Activity history | `activity.jsonl` records changes, approvals and execution | explain what changed and when |
 | Contracted skills | every skill declares input, output, permission and verification | repeatable flows rather than improvisation |
+| Linked knowledge | typed Markdown nodes use `[[links]]` to connect entities, concepts, sources and questions | graph exploration remains explainable and source-backed |
 
 ## 6. Product experience
 
@@ -177,6 +265,11 @@ The founder can ask about clients, sales, finance, tax, contracts, delivery, cam
 | Campaign creation | client account, brand, goals and commercial context | brief, plan and production workflow | yes, before publishing or spending |
 | Contract review | agreement, proposal and approved template | draft, missing fields and flags | yes, before sending or signing |
 | Cash pulse | receivables, expenses, invoices and dates | cash position, risk and next actions | no, read-only |
+| Goal review | strategy, goals, KPIs, initiatives and recent activity | progress review, evidence gaps and proposed decisions | no, read-only |
+| Capacity review | people profiles, roles, workload and client commitments | overload risk, ownership gap or hiring proposal | no, read-only |
+| Knowledge ingest | authorized source, node schema and workspace scope | linked entity, concept, source and question proposals | draft only |
+| Knowledge query | graph index and scoped Markdown nodes | answer with nodes, backlinks and source path | read-only |
+| Graph maintenance | index, hot context and link map | broken-link, orphan and stale-node report | read-only |
 
 ### 6.2 Focus mode by client or project
 
@@ -204,6 +297,94 @@ Every proposed decision has an answerable question, one owner and date, linked e
 
 Mark AI proposes. The founder decides. After approval, it records what changed and which artifacts or actions need updating. It surfaces operational contradictions before creating another task.
 
+### 6.4 Agent roles and orchestration contract
+
+Agents are specialized workers, not independent decision-makers. An orchestrator selects a workflow, loads only the authorized context, calls the necessary skills, and returns a structured proposal for the founder or role owner to review.
+
+| Agent | Responsibility | Cannot do |
+|---|---|---|
+| Company Director | turn URL and founder confirmation into a company profile and initial workspace | invent company facts or approve its own profile |
+| Chief of Staff | synthesize priorities, blockers, decisions and cross-department dependencies | execute external actions or decide company strategy |
+| Commercial Agent | prepare lead research, discovery, proposal and follow-up drafts | send outreach or change deal status without approval |
+| Delivery Agent | maintain client state, milestones, meetings and handoffs | move scope or promise a delivery without approval |
+| Finance Agent | calculate cash, collections, expense and KPI views from authorized data | pay, file, or declare tax on behalf of the company |
+| Legal Agent | prepare contract drafts and flag missing inputs or risks | provide legal advice, sign, or represent legal review |
+| Campaign Agent | build brief, plan, production queue and performance synthesis | publish, spend budget or change live media without approval |
+| People and Capacity Agent | identify ownership gaps, workload risks and hiring proposals | access sensitive HR records or make employment decisions |
+| Documenter | write approved changes to canonical Markdown and append activity | overwrite a canonical source without an approved diff |
+| Analyst | compare outcomes with goals and KPIs, then propose a learning | alter targets or strategy automatically |
+| Knowledge Curator | extract and link scoped entities, concepts, sources and open questions | invent facts, bypass access scopes or delete nodes automatically |
+
+### 6.5 Skill contract and required skills
+
+Every skill is versioned and declares its input schema, allowed sources, output schema, permission level, verification step and canonical artifacts it may update. A skill cannot read another client or department by implication.
+
+| Skill | Inputs | Output | Permission | Verification |
+|---|---|---|---|---|
+| `workspace-bootstrap` | URL, founder confirmation | profile, folder plan, source map | read-only | profile has evidence and declared unknowns |
+| `company-foundation` | profile, founder input | company strategy, goals, KPIs, roles templates | draft only | every goal has owner and review date |
+| `founder-pulse` | accounts, activity, calendar, finance | maximum three priorities | read-only | each priority links to evidence |
+| `client-briefing` | one client workspace | account summary, commitments, blockers, next step | read-only | context boundary is one client |
+| `client-handoff` | approved session changes | account update, activity record, handoff draft | draft only | diff is shown before write |
+| `collection-follow-up` | invoice, agreement, thread | send-ready draft | propose only | amount, due date and recipient match source |
+| `meeting-prep` | calendar event, account, documents | agenda and preparation pack | read-only | all cited documents are accessible |
+| `goal-review` | strategy, KPI history, activity | progress review and decision proposal | read-only | missing baseline/source is marked |
+| `capacity-review` | roles, availability, workload | workload risk or hiring proposal | read-only | no sensitive HR data loaded |
+| `contract-draft` | approved template and deal data | legal draft with missing-field flags | draft only | template version and fields are traced |
+| `campaign-runbook` | client, brand, objective, budget | brief, plan, production queue and measurement plan | draft only | budget and approval gates are explicit |
+| `outcome-learning` | approved outcome and KPI delta | learning entry and proposed adjustment | propose only | observation is separated from inference |
+| `knowledge-ingest` | authorized document or transcript | typed nodes, links and update proposals | draft only | every assertion links to source |
+| `knowledge-query` | scoped graph and Markdown vault | cited answer, relationship path and backlinks | read-only | no node outside access scope is traversed |
+| `graph-maintain` | index, hot context and link map | refreshed index plus lint report | read-only | broken links and orphans are reported, never deleted |
+
+### 6.6 Hooks and event lifecycle
+
+Hooks keep the system current without creating hidden autonomous behavior. They respond to an event, record an activity item, update a derived view, and create a proposal only when an owner needs to decide.
+
+| Hook | Trigger | Safe automatic work | Human-gated follow-up |
+|---|---|---|---|
+| `workspace.created` | agency profile is confirmed | create canonical folders and empty artifact templates | founder confirms profile and source connections |
+| `client.created` | a lead becomes an active client | create client account, activity log and handoff template | approve scope, legal and billing setup |
+| `source.synced` | Gmail, Calendar, Drive or Sheets sync finishes | index references and refresh derived signals | approve actions proposed from signals |
+| `meeting.upcoming` | meeting enters preparation window | prepare context pack and agenda draft | owner reviews agenda or sends it |
+| `invoice.overdue` | due date passes | flag risk and prepare follow-up draft | founder approves sending |
+| `goal.review_due` | goal review date arrives | assemble KPI evidence and progress summary | owner decides continue, adjust or pause |
+| `approval.granted` | founder approves a proposal | write approved Markdown diff and append activity | execution only if the approved action is external |
+| `outcome.recorded` | approved action has result | link result to KPI and draft learning | founder accepts or rejects learning |
+| `source.accepted` | a source is approved for knowledge use | create proposed nodes, backlinks and hot-context refresh | founder approves any canonical write |
+
+### 6.7 Workflow definitions
+
+Workflows are explicit state machines. They are resumable because state, artifacts and the latest handoff live in the workspace.
+
+| Workflow | Ordered states | Completion condition |
+|---|---|---|
+| Agency onboarding | URL → profile draft → founder confirmation → source connection → company foundation → first pulse | founder sees confirmed company, goals and first decision queue |
+| Client lifecycle | lead → qualified → proposal → approved agreement → active delivery → closeout → archive | client account, commercial record, legal status, cash status and handoff agree |
+| Campaign lifecycle | client context → brief → plan → production → review → founder approval → approved execution → results → learning | results link to the stated objective and next decision |
+| Weekly founder rhythm | source sync → pulse → Council → approvals → focused work → handoff → KPI review | top decisions have owner, date and evidence |
+| Hiring and capacity | capacity signal → role gap → hiring proposal → founder decision → assignment or pause | role owner and capacity impact are recorded |
+| Contract workflow | deal data → draft → missing-field review → legal review if needed → founder approval → signature tracking | contract state is explicit; no signature happens through Mark AI without approval |
+
+### 6.8 MCP and connector requirements
+
+MCPs are adapters to authorized external tools. Mark AI uses the least privilege required for a workflow and separates read, draft and execute permissions. Connector setup is never considered proof that an action is approved.
+
+| MCP / connector | Required capability | Minimum permission | Mark AI use | Approval gate |
+|---|---|---|---|---|
+| Google Gmail | search and read messages; draft email | read + drafts | commitments, collections, commercial context | sending is always explicit |
+| Google Calendar | read events; draft or create event | read; write only when enabled | meeting prep, deadlines and capacity | create/update event requires approval |
+| Google Drive | search, read metadata and approved documents | read; scoped write when enabled | source retrieval, document linking and workspace structure | create, move or share requires approval |
+| Google Sheets | read named ranges and append approved rows | read; append only when enabled | cash, pipeline and KPI signals | write requires approval |
+| Supabase | authenticated app data and realtime state | service role on server only | workspace index, approvals and application state | never expose service role to browser |
+| Exa | public web research | API key on server only | website and market context | read-only |
+| Gemini | structured generation and reasoning | API key on server only | profile extraction, synthesis and draft generation | output remains a proposal |
+| Resend | create outbound email send request | server-only API key | approved email delivery | only after explicit approval |
+| Meta Ads | read account and create paused campaign artifacts | scoped account access | approved campaign planning and execution | budget, publish and status changes require approval |
+| Markdown graph store | read and write scoped Markdown nodes plus link index | workspace-scoped filesystem access | canonical Second Brain nodes and graph indexing | writes require reviewed diff |
+
+The implementation should add connectors in this order: Google read-only context → Supabase application state → Gemini structured generation → approved Gmail drafts → Drive/Calendar/Sheets scoped writes → Resend → Meta Ads. No connector is required for the deterministic demo path.
+
 ## 7. Guardrails
 
 - Mark AI can read, summarize, prepare and recommend within authorized sources.
@@ -221,7 +402,11 @@ mark-ai/
 ├── agents/                      # director, chief of staff, documenter, analyst
 ├── integrations/                # Google Workspace MCP, Exa, Resend
 ├── services/                    # workspace store and action queue
-├── skills/                      # pulse, collections, meetings and decisions
+├── skills/                      # versioned input/output/permission contracts
+├── hooks/                       # event handlers and derived-state refresh
+├── workflows/                   # resumable department state machines
+├── mcp/                         # connector capability and permission adapters
+├── knowledge/                   # node schema, graph index, hot context and lint
 ├── modules/campaigns/           # end-to-end client campaign workflow
 ├── frontend/                    # onboarding, cockpit, review and documents
 ├── workspaces/
@@ -239,6 +424,9 @@ mark-ai/
 - Founder Council returns at most three actionable decisions, each with evidence, recommendation, owner and cost of waiting.
 - A plain-language question lands on the relevant entity, document or action.
 - Client onboarding enables end-to-end Campaigns without rebuilding context.
+- The founder can view company strategy, goals, KPIs, roles and available capacity without assembling them from separate tools.
+- Every active goal names an owner, horizon, next review and at least one measurable or explicitly unknown indicator.
+- A team or hiring recommendation is linked to a documented role, workload evidence and a founder decision.
 - Human-edited and approved actions leave a trace in Markdown.
 
 ## 10. Team roles

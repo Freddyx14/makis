@@ -50,7 +50,7 @@ export default function NuevaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -59,10 +59,10 @@ export default function NuevaPage() {
       >
         <div className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-serif text-brand-light mb-4">
-            Nuevo workspace
+            Create agency workspace
           </h1>
           <p className="text-brand-light/70 text-lg">
-            Ingresa los datos de tu negocio y Makis se encarga del resto.
+            Start with the agency URL. Mark AI prepares the operating context.
           </p>
         </div>
 
@@ -71,12 +71,12 @@ export default function NuevaPage() {
           <div>
             <label className="block text-brand-light/80 text-sm font-medium mb-2">
               <Globe className="w-4 h-4 inline mr-2" />
-              URL del negocio *
+              Agency website *
             </label>
             <input
               type="url"
               required
-              placeholder="https://tunegocio.com"
+              placeholder="https://youragency.com"
               value={form.url}
               onChange={(e) => setForm({ ...form, url: e.target.value })}
               className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-brand-light placeholder-brand-light/40 focus:outline-none focus:border-brand-accent transition-colors"
@@ -87,12 +87,12 @@ export default function NuevaPage() {
           <div>
             <label className="block text-brand-light/80 text-sm font-medium mb-2">
               <Target className="w-4 h-4 inline mr-2" />
-              Objetivo de marketing *
+              Founder objective *
             </label>
             <textarea
               required
               rows={3}
-              placeholder="Ej: Generar 50 leads calificados por mes para nuestro servicio de consultoría"
+              placeholder="Example: bring client delivery, cash and campaign work into one operating view"
               value={form.objective}
               onChange={(e) => setForm({ ...form, objective: e.target.value })}
               className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-brand-light placeholder-brand-light/40 focus:outline-none focus:border-brand-accent transition-colors resize-none"
@@ -103,11 +103,11 @@ export default function NuevaPage() {
           <div>
             <label className="block text-brand-light/80 text-sm font-medium mb-2">
               <DollarSign className="w-4 h-4 inline mr-2" />
-              Presupuesto mensual (opcional)
+              Monthly operating budget (optional)
             </label>
             <input
               type="text"
-              placeholder="Ej: $500 USD"
+              placeholder="Example: $500 USD"
               value={form.budget}
               onChange={(e) => setForm({ ...form, budget: e.target.value })}
               className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-brand-light placeholder-brand-light/40 focus:outline-none focus:border-brand-accent transition-colors"
@@ -118,11 +118,11 @@ export default function NuevaPage() {
           <div>
             <label className="block text-brand-light/80 text-sm font-medium mb-2">
               <MapPin className="w-4 h-4 inline mr-2" />
-              Mercado objetivo (opcional)
+              Primary market (optional)
             </label>
             <input
               type="text"
-              placeholder="Ej: Chile, Latinoamérica"
+              placeholder="Example: Peru, LATAM"
               value={form.market}
               onChange={(e) => setForm({ ...form, market: e.target.value })}
               className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-brand-light placeholder-brand-light/40 focus:outline-none focus:border-brand-accent transition-colors"
@@ -143,11 +143,11 @@ export default function NuevaPage() {
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Creando workspace...
+                Creating workspace...
               </>
             ) : (
               <>
-                Lanzar investigación
+                Build operating context
                 <ArrowRight className="w-5 h-5" />
               </>
             )}

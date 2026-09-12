@@ -46,7 +46,7 @@ export default function WorkspacePage() {
     async function fetchState() {
       try {
         const res = await fetch(`/api/workspaces/${id}`);
-        if (!res.ok) throw new Error("Workspace no encontrado");
+        if (!res.ok) throw new Error("Workspace not found");
         const data = await res.json();
         if (mounted) {
           setState(data);
@@ -73,7 +73,7 @@ export default function WorkspacePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-brand-dark flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-brand-accent animate-spin" />
       </div>
     );
@@ -81,14 +81,14 @@ export default function WorkspacePage() {
 
   if (error || !state) {
     return (
-      <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-4">
         <AlertCircle className="w-12 h-12 text-red-400" />
-        <p className="text-brand-light/80 text-lg">{error || "Workspace no encontrado"}</p>
+        <p className="text-brand-light/80 text-lg">{error || "Workspace not found"}</p>
         <button
           onClick={() => router.push("/nueva")}
           className="text-brand-accent hover:text-brand-accent-hover text-sm"
         >
-          Crear nuevo workspace
+          Create a new workspace
         </button>
       </div>
     );
@@ -98,7 +98,7 @@ export default function WorkspacePage() {
   const currentActIndex = ACT_ORDER.indexOf(workspace.current_act);
 
   return (
-    <div className="min-h-screen bg-brand-dark">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="border-b border-surface-border bg-surface-dark/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -164,7 +164,7 @@ export default function WorkspacePage() {
             })}
           </div>
           <p className="text-brand-light/60 text-sm capitalize">
-            Acto: {workspace.current_act} &middot;{" "}
+            Current stage: {workspace.current_act} &middot;{" "}
             <span className={workspace.status === "running" ? "text-brand-accent animate-makis-pulse" : ""}>
               {workspace.status}
             </span>
@@ -172,11 +172,11 @@ export default function WorkspacePage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Columna izquierda: Pasos */}
+          {/* Pipeline */}
           <div className="lg:col-span-2 space-y-3">
-            <h2 className="text-lg font-serif text-brand-light mb-4">Progreso del pipeline</h2>
+            <h2 className="text-lg font-serif text-brand-light mb-4">Operating progress</h2>
             {steps.length === 0 ? (
-              <p className="text-brand-light/50 text-sm">Esperando primer paso...</p>
+              <p className="text-brand-light/50 text-sm">Waiting for the first step...</p>
             ) : (
               steps.map((step, idx) => (
                 <StepCard
@@ -192,13 +192,12 @@ export default function WorkspacePage() {
             )}
           </div>
 
-          {/* Columna derecha: Artefactos + Contenido */}
+          {/* Documents and work */}
           <div className="space-y-6">
-            {/* Artefactos de Google Workspace */}
             <div>
-              <h2 className="text-lg font-serif text-brand-light mb-4">Entregables en Drive</h2>
+              <h2 className="text-lg font-serif text-brand-light mb-4">Connected documents</h2>
               {artifacts.length === 0 ? (
-                <p className="text-brand-light/50 text-sm">Aún no hay artefactos...</p>
+                <p className="text-brand-light/50 text-sm">No documents yet...</p>
               ) : (
                 <div className="space-y-2">
                   {artifacts.map((art) => (
@@ -208,10 +207,9 @@ export default function WorkspacePage() {
               )}
             </div>
 
-            {/* Contenido generado */}
             {content.length > 0 && (
               <div>
-                <h2 className="text-lg font-serif text-brand-light mb-4">Contenido</h2>
+                <h2 className="text-lg font-serif text-brand-light mb-4">Generated work</h2>
                 <div className="space-y-2">
                   {content.map((piece) => (
                     <ContentCard key={piece.id} piece={piece} />
