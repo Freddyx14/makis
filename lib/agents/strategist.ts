@@ -110,18 +110,18 @@ Diseña una estrategia completa: campaña, personas, canales con distribución d
     step.tokens_in = result.usage.tokens_in;
     step.tokens_out = result.usage.tokens_out;
     step.model = result.usage.model;
-    step.detail = `Estrategia generada: ${result.data.campaign}`;
+    step.detail = `Estrategia generada: ${result.data.campaign ?? "Sin nombre"}`;
     step.finished_at = now();
     await saveStep(step);
 
     const strategy: Strategy = {
       workspace_id: wsId,
-      campaign: result.data.campaign,
-      offer: result.data.offer,
-      personas: result.data.personas as BuyerPersona[],
-      channels: result.data.channels as ChannelPlan[],
-      kpis: result.data.kpis as Kpi[],
-      grounded_in: result.data.grounded_in,
+      campaign: result.data.campaign ?? "Campaña General",
+      offer: result.data.offer ?? ctx.brief.profile.offer,
+      personas: (result.data.personas ?? []) as BuyerPersona[],
+      channels: (result.data.channels ?? []) as ChannelPlan[],
+      kpis: (result.data.kpis ?? []) as Kpi[],
+      grounded_in: result.data.grounded_in ?? [],
     };
 
     return {

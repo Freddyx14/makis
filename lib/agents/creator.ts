@@ -91,7 +91,7 @@ Reglas:
 Oferta: ${strategy.offer}
 Canal: ${plan.channel}
 Tipo: ${plan.kind}
-Personas: ${strategy.personas.map((p) => p.name).join(", ")}
+Personas: ${(strategy.personas ?? []).map((p) => p.name).join(", ")}
 
 Genera UNA pieza de contenido para este canal y tipo.`,
             temperature: 0.8,

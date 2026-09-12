@@ -65,15 +65,22 @@ Genera métricas simuladas realistas para cada canal y aprendizajes para el sigu
     });
 
     // Guardar métricas (marcadas como mock)
-    const metricsWithMode: Metric[] = result.data.metrics.map((m) => ({
-      ...m,
+    const metricsArray = Array.isArray(result.data.metrics) ? result.data.metrics : [];
+    const metricsWithMode: Metric[] = metricsArray.map((m) => ({
+      channel: m.channel ?? "unknown",
+      leads: m.leads ?? 0,
+      conversions: m.conversions ?? 0,
+      cpl: m.cpl ?? 0,
+      cac: m.cac ?? 0,
+      roas: m.roas ?? 0,
       mode: "mock" as const,
     }));
     await saveMetrics(wsId, metricsWithMode);
 
     // Guardar aprendizajes
+    const learningsArray = Array.isArray(result.data.learnings) ? result.data.learnings : [];
     const learnings: Learning[] = [];
-    for (const l of result.data.learnings) {
+    for (const l of learningsArray) {
       const learning: Learning = {
         id: newId("lrn"),
         workspace_id: wsId,
