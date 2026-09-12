@@ -3,15 +3,14 @@
  *
  * Ejecuta los 4 actos en secuencia:
  *   1. ENTRADA → extracción del perfil (ya hecho antes de llegar aquí)
- *   2. INVESTIGAR → researcher
+ *   2. INVESTIGAR → researcher (se salta si ya existe)
  *   3. CONSTRUIR → strategist + creator
  *   4. GOBERNAR → aprobación del usuario (pausa, no agente)
  *   5. APRENDER → analyst
  *
- * Cada transición es atómica: si un agente falla, el run se marca como
- * `failed` y el cockpit muestra el error. Un run interrumpido es reanudable.
- *
- * El director NO crea contenido ni ejecuta: solo orquesta y persiste.
+ * SOPORTE PARA REANUDACIÓN: si el research ya existe en BD, se reutiliza
+ * y se salta directamente al construir. Esto permite retries sin repetir
+ * llamadas costosas a Exa.
  */
 
 import {
@@ -21,6 +20,7 @@ import {
   saveBrief,
   saveStrategy,
   saveResearch,
+  getResearch,
   saveArtifact,
   now,
   newId,
@@ -108,21 +108,36 @@ export async function runPipeline(
     }
 
     // ── Acto 1: INVESTIGAR ─────────────────────────────────────────────
-    await setAct(wsId, "investigar", "running");
+    // Si ya existe investigación (reanudación), se reutiliza
+    let research = await getResearch(wsId);
+    let researchResult;
 
-    const researchResult = await researcher({
-      workspace,
-      brief,
-      accessToken,
-      redirectUrl: "",
-    });
+    if (research && research.findings.length > 0) {
+      console.log(`[director] Investigación existente: ${research.findings.length} hallazgos, ${research.competitors.length} competidores`);
+      // Crear un researchResult virtual para pasar al strategist
+      researchResult = {
+        act: "investigar" as Act,
+        agent: "researcher" as const,
+        name: "Investigación (previa)",
+        step: { id: "prev", workspace_id: wsId, act: "investigar" as Act, agent: "researcher" as const, name: "Investigación previa", status: "done" as const, sources: [], tokens_in: 0, tokens_out: 0 },
+        data: { findings: research.findings, competitors: research.competitors, siteText: "", siteSources: [] },
+      } as AgentResult;
+    } else {
+      await setAct(wsId, "investigar", "running");
+      researchResult = await researcher({
+        workspace,
+        brief,
+        accessToken,
+        redirectUrl: "",
+      });
 
-    const research: Research = {
-      workspace_id: wsId,
-      findings: (researchResult.data as any).findings,
-      competitors: (researchResult.data as any).competitors,
-    };
-    await saveResearch(research);
+      research = {
+        workspace_id: wsId,
+        findings: (researchResult.data as any).findings,
+        competitors: (researchResult.data as any).competitors,
+      };
+      await saveResearch(research);
+    }
 
     // Artefacto: Doc de investigación
     if (folderId) {

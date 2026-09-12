@@ -15,6 +15,7 @@ import {
   AlertCircle,
   FileText,
   Sheet,
+  RefreshCw,
 } from "lucide-react";
 import { StepCard, ModeBadge } from "@/components/StepCard";
 import type { WorkspaceState, AgentStep, Artifact, ContentPiece } from "@/lib/types";
@@ -108,6 +109,9 @@ export default function WorkspacePage() {
           </div>
           <div className="flex items-center gap-3">
             <StatusBadge status={workspace.status} />
+            {workspace.status === "failed" && (
+              <RetryButton workspaceId={workspace.id} onRetry={() => window.location.reload()} />
+            )}
             {workspace.drive_folder_url && (
               <a
                 href={workspace.drive_folder_url}
@@ -274,5 +278,36 @@ function ContentCard({ piece }: { piece: ContentPiece }) {
       <p className="text-brand-light text-sm font-medium truncate">{piece.title}</p>
       <p className="text-brand-light/50 text-xs mt-1 line-clamp-2">{piece.body.slice(0, 120)}...</p>
     </div>
+  );
+}
+
+function RetryButton({ workspaceId, onRetry }: { workspaceId: string; onRetry: () => void }) {
+  const [retrying, setRetrying] = useState(false);
+
+  async function handleRetry() {
+    setRetrying(true);
+    try {
+      await fetch(`/api/workspaces/${workspaceId}/retry`, { method: "POST" });
+      onRetry();
+    } catch (e) {
+      console.error("Error retrying:", e);
+    } finally {
+      setRetrying(false);
+    }
+  }
+
+  return (
+    <button
+      onClick={handleRetry}
+      disabled={retrying}
+      className="flex items-center gap-1 bg-brand-accent/15 text-brand-accent hover:bg-brand-accent/25 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+    >
+      {retrying ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <RefreshCw className="w-4 h-4" />
+      )}
+      Reintentar
+    </button>
   );
 }
