@@ -34,3 +34,16 @@ venv/
 # Environment
 .env
 .env.local
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Datos locales
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# TS
+*.tsbuildinfo

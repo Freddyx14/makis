@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/* Tokens de marca heredados del prototipo `agencia-de-marketing-ia`.
+   NO se rediseña nada: estos valores son los mismos, verbatim. */
+@theme {
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+
+  --color-brand-dark: #121c10;
+  --color-brand-light: #f2f0e9;
+  --color-brand-accent: #b0c98f;
+  --color-brand-accent-hover: #9db57d;
+  --color-surface-dark: #1e2b1b;
+  --color-surface-border: #2c3e28;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-dark text-brand-light font-sans antialiased
+           selection:bg-brand-accent selection:text-brand-dark;
+  }
+
+  /* Regla tipográfica del prototipo: TODOS los headings en Playfair. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif font-normal;
+  }
+}
+
+@layer utilities {
+  /* Estado `running` de una tarjeta de paso. Reusa el patrón `highlight`
+     que ya existía en Features.tsx del prototipo. */
+  .step-running {
+    @apply border-brand-accent/40 bg-brand-accent/5;
+  }
+
+  @keyframes makis-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+
+  .animate-makis-pulse {
+    animation: makis-pulse 1.4s ease-in-out infinite;
+  }
+}
