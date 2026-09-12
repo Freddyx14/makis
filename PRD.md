@@ -1,7 +1,7 @@
 # Mark AI — Product Requirements Document
 ## The agentic operating environment for agency founders
 
-> **Version:** 6.3.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)
+> **Version:** 6.4.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)
 > **Team:** Maki Acevichado (Joel Espinoza · Diego Celis · Miluska R. · Freddy Ñañez)
 > **Stack:** FastAPI · OpenAI Agents SDK · Google Workspace MCP · Exa Search · Resend · SQLite · Chart.js
 
@@ -73,6 +73,8 @@ External-impact actions such as sending email, publishing content, spending budg
 ~~~text
 workspace/<agency>/
 ├── account.md                   # current state, owner, blockers, next milestone
+├── company/                     # company profile, strategy, goals and KPIs
+├── people/                      # team members, roles, capacity and hiring context
 ├── operations/                  # pulse, meetings, tasks and procedures
 ├── clients/<slug>/account.md    # client agreement, state and next step
 ├── finance/                     # cash, collections, expenses and assumptions
@@ -84,6 +86,45 @@ workspace/<agency>/
 ~~~
 
 SQLite indexes artifacts, versions, sources, approvals and events. It never replaces documents; it makes the right context retrievable and explainable.
+
+### 3.4 Company foundation: strategy, people and performance
+
+Before Mark AI can make useful recommendations, it needs more than a website and inbox. It needs the operating facts that define how the agency intends to win, who is responsible for work, and how progress is measured.
+
+| Canonical artifact | Contains | Used by |
+|---|---|---|
+| `company/profile.md` | legal and commercial name, offer, markets, ownership, operating model, systems and source links | onboarding, account view and any agent needing company context |
+| `company/strategy.md` | positioning, ICP, service lines, differentiators, strategic bets and explicit non-goals | Founder Council, Commercial, Campaigns and portfolio decisions |
+| `company/goals.md` | quarterly or annual outcomes, owner, due date, leading indicators and confidence | founder cockpit and weekly pulse |
+| `company/kpis.md` | metric definition, source, cadence, baseline, target and latest value | Finance, Commercial, Delivery and reporting |
+| `people/<slug>/profile.md` | role, responsibilities, skills, availability, capacity, manager and access boundary | Capacity, delivery assignment and hiring decisions |
+| `people/roles.md` | the roles the agency needs, current owner, accountability and coverage gap | founder planning and team design |
+| `people/hiring.md` | approved hiring need, rationale, budget, priority, stage and decision owner | capacity planning and Founder Council |
+
+This is a lightweight people-and-capacity system, not an HRIS. Mark AI does not need sensitive employment records to help a founder operate. It needs only the minimum professional information required to understand responsibility, availability, capability and workload.
+
+### 3.5 Goals, KPIs and strategy-to-work traceability
+
+Every active initiative, client engagement and campaign should link upward to a strategic goal and, when measurable, to one or more KPIs. The system must show the chain instead of forcing the founder to infer it:
+
+~~~mermaid
+flowchart LR
+    A["Strategy and non-goals"] --> B["Company goal"]
+    B --> C["KPI and target"]
+    C --> D["Initiative or client work"]
+    D --> E["Owner, action and evidence"]
+    E --> F["Outcome and learning"]
+    F -. revise .-> A
+~~~
+
+| Requirement | Product behavior |
+|---|---|
+| Metric honesty | A KPI without a source, baseline or update date is visibly marked incomplete, not treated as a live performance claim. |
+| Goal ownership | Every goal has one accountable owner, a time horizon and a next review date. |
+| Leading and lagging indicators | A revenue outcome can be paired with leading indicators such as qualified opportunities, proposal conversion, delivery cycle time or collection days. |
+| Capacity-aware planning | Mark AI flags a goal or client commitment when no role has capacity to own it. |
+| Privacy boundary | Team profiles avoid personal or sensitive HR data. Access follows role necessity and is auditable. |
+| Learning loop | A missed target produces an evidence-backed learning or decision proposal, not automatic changes to strategy. |
 
 ## 4. One platform, departments with different depth
 
@@ -159,6 +200,8 @@ The founder can ask about clients, sales, finance, tax, contracts, delivery, cam
 | Campaign creation | client account, brand, goals and commercial context | brief, plan and production workflow | yes, before publishing or spending |
 | Contract review | agreement, proposal and approved template | draft, missing fields and flags | yes, before sending or signing |
 | Cash pulse | receivables, expenses, invoices and dates | cash position, risk and next actions | no, read-only |
+| Goal review | strategy, goals, KPIs, initiatives and recent activity | progress review, evidence gaps and proposed decisions | no, read-only |
+| Capacity review | people profiles, roles, workload and client commitments | overload risk, ownership gap or hiring proposal | no, read-only |
 
 ### 6.2 Focus mode by client or project
 
@@ -221,6 +264,9 @@ mark-ai/
 - Founder Council returns at most three actionable decisions, each with evidence, recommendation, owner and cost of waiting.
 - A plain-language question lands on the relevant entity, document or action.
 - Client onboarding enables end-to-end Campaigns without rebuilding context.
+- The founder can view company strategy, goals, KPIs, roles and available capacity without assembling them from separate tools.
+- Every active goal names an owner, horizon, next review and at least one measurable or explicitly unknown indicator.
+- A team or hiring recommendation is linked to a documented role, workload evidence and a founder decision.
 - Human-edited and approved actions leave a trace in Markdown.
 
 ## 10. Team roles
