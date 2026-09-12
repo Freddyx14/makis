@@ -1,0 +1,118 @@
+%!TEX program = lualatex
+\documentclass{loopmind-doc}
+
+\doclang{es}
+\doctype{Documento de producto}
+\doctitle{Makis\newline De URL a workspace}
+\docsubtitle{El onboarding autónomo que convierte el sitio de una empresa en un sistema de trabajo de GTM.}
+\docclient{Equipo Maki Acevichado}
+\docdate{Septiembre 2026}
+\docversion{1.0}
+
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric}
+\setlength{\headheight}{20pt}
+\newcommand{\makisstep}[3]{%
+\begin{tcolorbox}[colback=lm-surface,colframe=lm-border,boxrule=.45pt,arc=2mm,
+left=4mm,right=4mm,top=4mm,bottom=4mm]
+{\datafont\bfseries\fontsize{18pt}{18pt}\selectfont\textcolor{lm-accent}{#1}}\hspace{7pt}%
+{\headingfont\bfseries\fontsize{11pt}{13pt}\selectfont\color{lm-black}#2}\par\vspace{4pt}
+{\fontsize{9pt}{13pt}\selectfont\color{lm-secondary}#3}
+\end{tcolorbox}}
+
+\begin{document}
+
+\makecover
+\sectionlabel{La idea}
+
+\section{Una puerta de entrada, no un formulario}
+
+Makis empieza con la evidencia que ya tiene la empresa: su sitio web. El usuario pega una URL, confirma lo que Makis entendió y recibe un workspace de Go-To-Market listo para revisar.
+
+\begin{callouttitled}{La decisión de producto}
+La documentación vive en Markdown porque debe ser durable, versionable y exportable. La interfaz la renderiza como vistas claras para que el usuario pueda decidir y actuar sin leer archivos técnicos.
+\end{callouttitled}
+
+\vspace{8pt}
+\begin{center}
+\begin{tikzpicture}[node distance=4mm and 5mm, every node/.style={align=center}]
+\node[rounded corners=3pt, fill=lm-accent, text=white, minimum width=28mm, minimum height=16mm, font=\bfseries\small] (url) {Pega\\su URL};
+\node[rounded corners=3pt, fill=lm-accent-tint, draw=lm-accent, minimum width=31mm, minimum height=16mm, font=\bfseries\small, right=of url] (read) {Makis lee\\el sitio};
+\node[rounded corners=3pt, fill=lm-surface, draw=lm-border, minimum width=31mm, minimum height=16mm, font=\bfseries\small, right=of read] (confirm) {Humano\\confirma};
+\node[rounded corners=3pt, fill=lm-black, text=white, minimum width=35mm, minimum height=16mm, font=\bfseries\small, right=of confirm] (work) {Workspace\\listo};
+\draw[-{Latex[length=2mm]}, thick, color=lm-accent] (url) -- (read);
+\draw[-{Latex[length=2mm]}, thick, color=lm-accent] (read) -- (confirm);
+\draw[-{Latex[length=2mm]}, thick, color=lm-accent] (confirm) -- (work);
+\end{tikzpicture}
+\end{center}
+
+\section{El recorrido completo}
+
+\makisstep{01}{Descubrir}{La URL, el objetivo y el presupuesto mínimo crean un brief verificable. Makis extrae marca, oferta, tono, categorías y llamados a la acción.}
+\makisstep{02}{Investigar}{Exa y la lectura del sitio ubican competidores, tendencias, lenguaje de categoría y oportunidades.}
+\makisstep{03}{Construir}{Makis crea la estrategia, el plan de contenido, las creatividades y los documentos que explican cada decisión.}
+\makisstep{04}{Gobernar}{El usuario revisa en la UI, edita en línea, aprueba o pide una nueva ejecución. Nada importante se ejecuta sin control humano.}
+\makisstep{05}{Aprender}{Las métricas y el resultado de cada pieza se convierten en un aprendizaje visible para el siguiente experimento.}
+
+\section{El workspace que aparece solo}
+
+\begin{center}
+\begin{tikzpicture}[
+folder/.style={rounded corners=2pt, fill=lm-surface, draw=lm-border, minimum width=114mm, minimum height=9mm, align=left, font=\small},
+doc/.style={rounded corners=2pt, fill=white, draw=lm-border-light, minimum width=102mm, minimum height=8mm, align=left, font=\small}
+]
+\node[folder] (root) {\textbf{workspace / empresa} \hfill contexto y decisiones del negocio};
+\node[doc, below=3mm of root] (brief) {00-brief.md \hfill perfil confirmado, objetivo y supuestos};
+\node[doc, below=2mm of brief] (research) {01-investigacion.md \hfill fuentes, competidores y hallazgos};
+\node[doc, below=2mm of research] (strategy) {02-estrategia.md \hfill audiencia, oferta, canales y KPIs};
+\node[doc, below=2mm of strategy] (plan) {03-plan-de-contenido.md \hfill piezas, prioridades y calendario};
+\node[doc, below=2mm of plan] (creative) {04-creatividades.md \hfill copy, prompts y aprobaciones};
+\node[doc, below=2mm of creative] (results) {05-resultados.md \hfill métricas, aprendizaje y siguiente experimento};
+\end{tikzpicture}
+\end{center}
+
+Cada documento tiene fecha, fuentes, versión y estado de aprobación. SQLite no reemplaza estos archivos: indexa versiones, decisiones y eventos para que el sistema pueda recuperarlos y aprender.
+
+\section{Una fuente de verdad, dos formas de verla}
+
+\begin{center}
+\begin{tikzpicture}[node distance=10mm, every node/.style={align=center}]
+\node[rounded corners=3pt, fill=lm-black, text=white, minimum width=44mm, minimum height=22mm, font=\bfseries\small] (md) {Markdown\\fuente de verdad};
+\node[rounded corners=3pt, fill=lm-accent, text=white, minimum width=44mm, minimum height=22mm, font=\bfseries\small, right=of md] (ui) {UI renderizada\\para decidir};
+\draw[-{Latex[length=2.5mm]}, thick, color=lm-accent] (md) -- node[above, font=\scriptsize\color{lm-secondary}]{renderiza} (ui);
+\draw[-{Latex[length=2.5mm]}, thick, color=lm-accent] (ui.south) to[out=-100,in=-80,looseness=1.1] node[below, font=\scriptsize\color{lm-secondary}]{un cambio aprobado actualiza y versiona} (md.south);
+\end{tikzpicture}
+\end{center}
+
+\vspace{6pt}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{31mm}X X}
+\toprule
+& \textbf{Documento} & \textbf{Vista en producto} \\
+\midrule
+Brief & Datos del negocio y supuestos & Ficha para corregir contexto \\
+Investigación & Fuentes y competidores & Tarjetas de evidencia \\
+Estrategia & Audiencia, oferta y KPIs & Tablero de dirección \\
+Creatividades & Copy, prompts e imágenes & Studio para editar y aprobar \\
+Resultados & Métricas y aprendizaje & Gráfico y próximo experimento \\
+\bottomrule
+\end{tabularx}
+
+\section{Qué debe probar el demo}
+
+\begin{callout}
+\begin{itemize}
+  \item Una URL crea un perfil de negocio y un workspace visible en menos de un minuto.
+  \item Tres documentos Markdown se generan y aparecen como módulos de interfaz, no como texto plano.
+  \item Una corrección hecha en la UI queda registrada en el documento fuente.
+  \item Una creatividad se aprueba y pasa a una ejecución real por Resend o a una simulación explícita.
+  \item Un aprendizaje del dashboard define el siguiente experimento.
+\end{itemize}
+\end{callout}
+
+\section{La frase de cierre}
+
+\begin{tcolorbox}[colback=lm-black,colframe=lm-black,arc=2mm,left=7mm,right=7mm,top=7mm,bottom=7mm]
+{\headingfont\bfseries\fontsize{17pt}{23pt}\selectfont\color{white}
+Makis no pide que describas tu empresa a un agente. Entra por tu URL, construye el sistema de trabajo y te deja gobernar cada decisión.}
+\end{tcolorbox}
+
+\end{document}
