@@ -51,6 +51,13 @@ export const MODELS = {
   reason: process.env.MAKIS_MODEL_REASON ?? "mimo-v2.5-free",
 } as const;
 
+/** Modelos para OpenRouter (los free de OpenCode no existen allá) */
+export const OPENROUTER_MODELS = {
+  extract: "nvidia/nemotron-3-ultra-550b-a55b:free",
+  synthesize: "nvidia/nemotron-3-ultra-550b-a55b:free",
+  reason: "nvidia/nemotron-3-ultra-550b-a55b:free",
+} as const;
+
 export type ModelTask = keyof typeof MODELS;
 
 export interface LlmUsage {
@@ -145,23 +152,25 @@ export async function generateObject<T extends z.ZodTypeAny>(opts: {
     }
   }
 
-  // 2. Intentar OpenRouter
+  // 2. Intentar OpenRouter (sin structured outputs, parsing manual)
   if (process.env.OPENROUTER_API_KEY) {
     try {
-      const completion = await openrouterClient().chat.completions.parse({
-        model,
+      const orModel = OPENROUTER_MODELS[opts.task];
+      const completion = await openrouterClient().chat.completions.create({
+        model: orModel,
         temperature: opts.temperature ?? 0.4,
         messages: [
           { role: "system", content: opts.system },
-          { role: "user", content: opts.prompt },
+          { role: "user", content: `${opts.prompt}\n\nResponde EXCLUSIVAMENTE con un JSON válido.` },
         ],
-        response_format: zodResponseFormat(opts.schema, opts.schemaName),
       });
-      const parsed = completion.choices[0]?.message?.parsed;
-      if (parsed) {
+      const content = completion.choices[0]?.message?.content ?? "";
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]) as z.infer<T>;
         return {
-          data: parsed as z.infer<T>,
-          usage: { model: `or:${model}`, tokens_in: completion.usage?.prompt_tokens ?? 0, tokens_out: completion.usage?.completion_tokens ?? 0 },
+          data: parsed,
+          usage: { model: `or:${orModel}`, tokens_in: completion.usage?.prompt_tokens ?? 0, tokens_out: completion.usage?.completion_tokens ?? 0 },
         };
       }
     } catch (e) {
@@ -208,8 +217,9 @@ export async function generateText(opts: {
   // 2. Intentar OpenRouter
   if (process.env.OPENROUTER_API_KEY) {
     try {
+      const orModel = OPENROUTER_MODELS[opts.task];
       const completion = await openrouterClient().chat.completions.create({
-        model,
+        model: orModel,
         temperature: opts.temperature ?? 0.7,
         messages: [
           { role: "system", content: opts.system },
@@ -220,7 +230,7 @@ export async function generateText(opts: {
       if (content) {
         return {
           data: content,
-          usage: { model: `or:${model}`, tokens_in: completion.usage?.prompt_tokens ?? 0, tokens_out: completion.usage?.completion_tokens ?? 0 },
+          usage: { model: `or:${orModel}`, tokens_in: completion.usage?.prompt_tokens ?? 0, tokens_out: completion.usage?.completion_tokens ?? 0 },
         };
       }
     } catch (e) {
