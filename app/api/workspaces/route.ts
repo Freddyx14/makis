@@ -19,7 +19,7 @@ const BriefExtractionSchema = z.object({
   brand_name: z.string().describe("Nombre de la marca o negocio"),
   offer: z.string().describe("Producto o servicio principal"),
   categories: z.array(z.string()).describe("Categorías del negocio"),
-  tone: z.string().optional().describe("Tono de comunicación"),
+  tone: z.string().nullable().describe("Tono de comunicación, null si no se detecta"),
   audience_signals: z.array(z.string()).describe("Señales de audiencia objetivo"),
   language: z.string().describe("Idioma principal"),
 });
