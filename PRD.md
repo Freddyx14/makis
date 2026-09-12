@@ -229,6 +229,88 @@ Every proposed decision has an answerable question, one owner and date, linked e
 
 Mark AI proposes. The founder decides. After approval, it records what changed and which artifacts or actions need updating. It surfaces operational contradictions before creating another task.
 
+### 6.4 Agent roles and orchestration contract
+
+Agents are specialized workers, not independent decision-makers. An orchestrator selects a workflow, loads only the authorized context, calls the necessary skills, and returns a structured proposal for the founder or role owner to review.
+
+| Agent | Responsibility | Cannot do |
+|---|---|---|
+| Company Director | turn URL and founder confirmation into a company profile and initial workspace | invent company facts or approve its own profile |
+| Chief of Staff | synthesize priorities, blockers, decisions and cross-department dependencies | execute external actions or decide company strategy |
+| Commercial Agent | prepare lead research, discovery, proposal and follow-up drafts | send outreach or change deal status without approval |
+| Delivery Agent | maintain client state, milestones, meetings and handoffs | move scope or promise a delivery without approval |
+| Finance Agent | calculate cash, collections, expense and KPI views from authorized data | pay, file, or declare tax on behalf of the company |
+| Legal Agent | prepare contract drafts and flag missing inputs or risks | provide legal advice, sign, or represent legal review |
+| Campaign Agent | build brief, plan, production queue and performance synthesis | publish, spend budget or change live media without approval |
+| People and Capacity Agent | identify ownership gaps, workload risks and hiring proposals | access sensitive HR records or make employment decisions |
+| Documenter | write approved changes to canonical Markdown and append activity | overwrite a canonical source without an approved diff |
+| Analyst | compare outcomes with goals and KPIs, then propose a learning | alter targets or strategy automatically |
+
+### 6.5 Skill contract and required skills
+
+Every skill is versioned and declares its input schema, allowed sources, output schema, permission level, verification step and canonical artifacts it may update. A skill cannot read another client or department by implication.
+
+| Skill | Inputs | Output | Permission | Verification |
+|---|---|---|---|---|
+| `workspace-bootstrap` | URL, founder confirmation | profile, folder plan, source map | read-only | profile has evidence and declared unknowns |
+| `company-foundation` | profile, founder input | company strategy, goals, KPIs, roles templates | draft only | every goal has owner and review date |
+| `founder-pulse` | accounts, activity, calendar, finance | maximum three priorities | read-only | each priority links to evidence |
+| `client-briefing` | one client workspace | account summary, commitments, blockers, next step | read-only | context boundary is one client |
+| `client-handoff` | approved session changes | account update, activity record, handoff draft | draft only | diff is shown before write |
+| `collection-follow-up` | invoice, agreement, thread | send-ready draft | propose only | amount, due date and recipient match source |
+| `meeting-prep` | calendar event, account, documents | agenda and preparation pack | read-only | all cited documents are accessible |
+| `goal-review` | strategy, KPI history, activity | progress review and decision proposal | read-only | missing baseline/source is marked |
+| `capacity-review` | roles, availability, workload | workload risk or hiring proposal | read-only | no sensitive HR data loaded |
+| `contract-draft` | approved template and deal data | legal draft with missing-field flags | draft only | template version and fields are traced |
+| `campaign-runbook` | client, brand, objective, budget | brief, plan, production queue and measurement plan | draft only | budget and approval gates are explicit |
+| `outcome-learning` | approved outcome and KPI delta | learning entry and proposed adjustment | propose only | observation is separated from inference |
+
+### 6.6 Hooks and event lifecycle
+
+Hooks keep the system current without creating hidden autonomous behavior. They respond to an event, record an activity item, update a derived view, and create a proposal only when an owner needs to decide.
+
+| Hook | Trigger | Safe automatic work | Human-gated follow-up |
+|---|---|---|---|
+| `workspace.created` | agency profile is confirmed | create canonical folders and empty artifact templates | founder confirms profile and source connections |
+| `client.created` | a lead becomes an active client | create client account, activity log and handoff template | approve scope, legal and billing setup |
+| `source.synced` | Gmail, Calendar, Drive or Sheets sync finishes | index references and refresh derived signals | approve actions proposed from signals |
+| `meeting.upcoming` | meeting enters preparation window | prepare context pack and agenda draft | owner reviews agenda or sends it |
+| `invoice.overdue` | due date passes | flag risk and prepare follow-up draft | founder approves sending |
+| `goal.review_due` | goal review date arrives | assemble KPI evidence and progress summary | owner decides continue, adjust or pause |
+| `approval.granted` | founder approves a proposal | write approved Markdown diff and append activity | execution only if the approved action is external |
+| `outcome.recorded` | approved action has result | link result to KPI and draft learning | founder accepts or rejects learning |
+
+### 6.7 Workflow definitions
+
+Workflows are explicit state machines. They are resumable because state, artifacts and the latest handoff live in the workspace.
+
+| Workflow | Ordered states | Completion condition |
+|---|---|---|
+| Agency onboarding | URL → profile draft → founder confirmation → source connection → company foundation → first pulse | founder sees confirmed company, goals and first decision queue |
+| Client lifecycle | lead → qualified → proposal → approved agreement → active delivery → closeout → archive | client account, commercial record, legal status, cash status and handoff agree |
+| Campaign lifecycle | client context → brief → plan → production → review → founder approval → approved execution → results → learning | results link to the stated objective and next decision |
+| Weekly founder rhythm | source sync → pulse → Council → approvals → focused work → handoff → KPI review | top decisions have owner, date and evidence |
+| Hiring and capacity | capacity signal → role gap → hiring proposal → founder decision → assignment or pause | role owner and capacity impact are recorded |
+| Contract workflow | deal data → draft → missing-field review → legal review if needed → founder approval → signature tracking | contract state is explicit; no signature happens through Mark AI without approval |
+
+### 6.8 MCP and connector requirements
+
+MCPs are adapters to authorized external tools. Mark AI uses the least privilege required for a workflow and separates read, draft and execute permissions. Connector setup is never considered proof that an action is approved.
+
+| MCP / connector | Required capability | Minimum permission | Mark AI use | Approval gate |
+|---|---|---|---|---|
+| Google Gmail | search and read messages; draft email | read + drafts | commitments, collections, commercial context | sending is always explicit |
+| Google Calendar | read events; draft or create event | read; write only when enabled | meeting prep, deadlines and capacity | create/update event requires approval |
+| Google Drive | search, read metadata and approved documents | read; scoped write when enabled | source retrieval, document linking and workspace structure | create, move or share requires approval |
+| Google Sheets | read named ranges and append approved rows | read; append only when enabled | cash, pipeline and KPI signals | write requires approval |
+| Supabase | authenticated app data and realtime state | service role on server only | workspace index, approvals and application state | never expose service role to browser |
+| Exa | public web research | API key on server only | website and market context | read-only |
+| Gemini | structured generation and reasoning | API key on server only | profile extraction, synthesis and draft generation | output remains a proposal |
+| Resend | create outbound email send request | server-only API key | approved email delivery | only after explicit approval |
+| Meta Ads | read account and create paused campaign artifacts | scoped account access | approved campaign planning and execution | budget, publish and status changes require approval |
+
+The implementation should add connectors in this order: Google read-only context → Supabase application state → Gemini structured generation → approved Gmail drafts → Drive/Calendar/Sheets scoped writes → Resend → Meta Ads. No connector is required for the deterministic demo path.
+
 ## 7. Guardrails
 
 - Mark AI can read, summarize, prepare and recommend within authorized sources.
@@ -246,7 +328,10 @@ mark-ai/
 ├── agents/                      # director, chief of staff, documenter, analyst
 ├── integrations/                # Google Workspace MCP, Exa, Resend
 ├── services/                    # workspace store and action queue
-├── skills/                      # pulse, collections, meetings and decisions
+├── skills/                      # versioned input/output/permission contracts
+├── hooks/                       # event handlers and derived-state refresh
+├── workflows/                   # resumable department state machines
+├── mcp/                         # connector capability and permission adapters
 ├── modules/campaigns/           # end-to-end client campaign workflow
 ├── frontend/                    # onboarding, cockpit, review and documents
 ├── workspaces/
