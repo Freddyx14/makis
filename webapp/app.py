@@ -119,7 +119,7 @@ def session(request: Request, response: Response):
         authenticated = True
     configured = os.getenv("LLM_PROVIDER", "demo") == "compatible" and all(os.getenv(k) for k in ("LLM_API_KEY", "LLM_MODEL", "LLM_BASE_URL"))
     return {"authenticated": authenticated, "password_required": bool(os.getenv("DEMO_PASSWORD")),
-            "provider": "Modelo configurado" if configured else "Modo demo · sin LLM",
+            "provider": "Modelo configurado" if configured else "Asistente de campaña",
             "llm_ready": bool(configured), "crawl_limit": max(1, min(int(os.getenv("CRAWL_MAX_PAGES", "20")), 100))}
 
 

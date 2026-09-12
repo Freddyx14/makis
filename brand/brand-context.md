@@ -14,6 +14,14 @@ industry: "agency operating software"
 
 # Brand identity: Mark AI
 
+### Campaign laboratory alignment (2026-09-12)
+
+The campaign laboratory now follows the public landing: white canvas, subtle
+peach radial field, Space Grotesk headings, generous centered introduction and
+orange only for active decisions. The persistent sidebar, repeated statistics
+and technical breadcrumb are intentionally removed from this customer-facing
+surface. Agent traces remain available as progressive disclosure.
+
 ### Campaign laboratory application (2026-09-12)
 
 The `/laboratorio` module uses Mark AI naming, white card surfaces, an orange

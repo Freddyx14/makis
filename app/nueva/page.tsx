@@ -11,10 +11,10 @@ export default function NuevaPage() {
   const [error, setError] = useState<string | null>(null);
   const [mockDemo, setMockDemo] = useState(true);
   const [form, setForm] = useState({
-    url: "https://www.kfc.com.pe/",
-    objective: "Demo ficticia: impulsar pedidos digitales de una oferta para compartir en Lima durante cuatro semanas.",
-    budget: "S/12,000 PEN · campaña ficticia de 4 semanas",
-    market: "Lima, Perú / español · público de prueba 18–35 años",
+    url: "https://crispy-chicken-promo.example/",
+    objective: "Impulsar pedidos digitales de una propuesta para compartir en Lima durante cuatro semanas.",
+    budget: "S/12,000 PEN · 4 semanas",
+    market: "Lima, Perú / español · audiencia 18–35 años",
   });
 
   async function handleSubmit(e: React.FormEvent) {
@@ -34,7 +34,7 @@ export default function NuevaPage() {
           method:"POST", headers:{"Content-Type":"application/json"}, body:"{}",
         });
         const campaign = await response.json();
-        if (!response.ok) throw new Error(campaign.detail || "No se pudo cargar el mockup de KFC.");
+        if (!response.ok) throw new Error(campaign.detail || "No se pudo cargar el caso de presentación.");
         router.push(`/laboratorio?campaign=${encodeURIComponent(campaign.id)}`);
         return;
       }
@@ -86,9 +86,9 @@ export default function NuevaPage() {
               <input type="checkbox" checked={mockDemo} disabled={loading} onChange={e=>{
                 const enabled=e.target.checked;
                 setMockDemo(enabled);
-                setForm(enabled ? {url:"https://www.kfc.com.pe/",objective:"Demo ficticia: impulsar pedidos digitales de una oferta para compartir en Lima durante cuatro semanas.",budget:"S/12,000 PEN · campaña ficticia de 4 semanas",market:"Lima, Perú / español · público de prueba 18–35 años"} : {url:"",objective:"",budget:"",market:""});
+                setForm(enabled ? {url:"https://crispy-chicken-promo.example/",objective:"Impulsar pedidos digitales de una propuesta para compartir en Lima durante cuatro semanas.",budget:"S/12,000 PEN · 4 semanas",market:"Lima, Perú / español · audiencia 18–35 años"} : {url:"",objective:"",budget:"",market:""});
               }}/>
-              <span><strong>Usar mockup completo de KFC Perú</strong><br/>Datos y resultados inventados. Sin APIs, envíos ni publicaciones. Al continuar abrirás Laboratorio de campañas con las cinco etapas cargadas.</span>
+              <span><strong>Usar caso BK: Crispy Chicken Promo</strong><br/>Al continuar abrirás Laboratorio de campañas con las cinco etapas cargadas.</span>
             </label>
           </div>
           {/* URL */}
@@ -171,7 +171,7 @@ export default function NuevaPage() {
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                {mockDemo ? "Cargando mockup…" : "Creating workspace..."}
+                {mockDemo ? "Preparando campaña…" : "Creating workspace..."}
               </>
             ) : (
               <>
