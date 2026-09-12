@@ -51,11 +51,11 @@ export const MODELS = {
   reason: process.env.MAKIS_MODEL_REASON ?? "mimo-v2.5-free",
 } as const;
 
-/** Modelos para OpenRouter (los free de OpenCode no existen allá) */
+/** Modelos para OpenRouter (pagados, baratos) */
 export const OPENROUTER_MODELS = {
-  extract: "nvidia/nemotron-3-ultra-550b-a55b:free",
-  synthesize: "nvidia/nemotron-3-ultra-550b-a55b:free",
-  reason: "nvidia/nemotron-3-ultra-550b-a55b:free",
+  extract: "deepseek/deepseek-chat-v3-0324",
+  synthesize: "deepseek/deepseek-chat-v3-0324",
+  reason: "deepseek/deepseek-chat-v3-0324",
 } as const;
 
 export type ModelTask = keyof typeof MODELS;
