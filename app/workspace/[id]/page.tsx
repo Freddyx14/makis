@@ -268,16 +268,44 @@ function ArtifactCard({ artifact }: { artifact: Artifact }) {
 }
 
 function ContentCard({ piece }: { piece: ContentPiece }) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
-    <div className="bg-surface-dark border border-surface-border rounded-xl p-3">
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-brand-accent/70 text-xs font-mono uppercase">{piece.kind}</span>
-        <span className="text-brand-light/30 text-xs">/</span>
-        <span className="text-brand-light/60 text-xs">{piece.channel}</span>
+    <>
+      <div
+        onClick={() => setExpanded(true)}
+        className="bg-surface-dark border border-surface-border rounded-xl p-3 cursor-pointer hover:border-brand-accent/50 transition-colors"
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-brand-accent/70 text-xs font-mono uppercase">{piece.kind}</span>
+          <span className="text-brand-light/30 text-xs">/</span>
+          <span className="text-brand-light/60 text-xs">{piece.channel}</span>
+        </div>
+        <p className="text-brand-light text-sm font-medium truncate">{piece.title}</p>
+        <p className="text-brand-light/50 text-xs mt-1 line-clamp-2">{piece.body.slice(0, 120)}...</p>
+        <p className="text-brand-accent/60 text-[10px] mt-2 font-mono">Click para ver completo</p>
       </div>
-      <p className="text-brand-light text-sm font-medium truncate">{piece.title}</p>
-      <p className="text-brand-light/50 text-xs mt-1 line-clamp-2">{piece.body.slice(0, 120)}...</p>
-    </div>
+
+      {expanded && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setExpanded(false)}>
+          <div
+            className="bg-surface-dark border border-surface-border rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="text-brand-accent/70 text-xs font-mono uppercase px-2 py-1 bg-brand-accent/10 rounded">{piece.kind}</span>
+                <span className="text-brand-light/30 text-xs">/</span>
+                <span className="text-brand-light/60 text-xs">{piece.channel}</span>
+              </div>
+              <button onClick={() => setExpanded(false)} className="text-brand-light/40 hover:text-brand-light text-xl">&times;</button>
+            </div>
+            <h3 className="text-brand-light font-medium mb-4">{piece.title}</h3>
+            <div className="text-brand-light/80 text-sm leading-relaxed whitespace-pre-wrap">{piece.body}</div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
