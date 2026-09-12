@@ -76,7 +76,8 @@ export async function researcher(
   let competitors: Competitor[];
   let competitorSources: Source[];
   try {
-    const desc = `${ctx.brief.profile.offer} — ${ctx.brief.profile.categories.join(", ")}`;
+    const categories = ctx.brief.profile.categories ?? [];
+    const desc = `${ctx.brief.profile.offer} — ${categories.join(", ")}`;
     const result = await findCompetitors(desc, {
       market: ctx.workspace.market,
       numResults: 5,
@@ -114,10 +115,11 @@ export async function researcher(
   let findings: Finding[] = [];
   let findingSources: Source[] = [];
   try {
+    const categories = ctx.brief.profile.categories ?? [];
     const topics = [
-      `Tendencias del mercado de ${ctx.brief.profile.categories.join(", ")} en ${ctx.workspace.market || "general"}`,
+      `Tendencias del mercado de ${categories.join(", ")} en ${ctx.workspace.market || "general"}`,
       `Audiencia objetivo para ${ctx.brief.profile.offer}`,
-      `Canales de marketing más efectivos para ${ctx.brief.profile.categories.join(", ")}`,
+      `Canales de marketing más efectivos para ${categories.join(", ")}`,
     ];
 
     for (const topic of topics) {

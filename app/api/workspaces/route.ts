@@ -51,12 +51,12 @@ export async function POST(req: NextRequest) {
     });
 
     const profile: BusinessProfile = {
-      brand_name: extraction.data.brand_name,
-      offer: extraction.data.offer,
-      categories: extraction.data.categories,
+      brand_name: extraction.data.brand_name || "Negocio",
+      offer: extraction.data.offer || "Servicios",
+      categories: extraction.data.categories ?? ["marketing"],
       tone: extraction.data.tone ?? null,
-      audience_signals: extraction.data.audience_signals,
-      language: extraction.data.language,
+      audience_signals: extraction.data.audience_signals ?? ["general"],
+      language: extraction.data.language || "es",
       sources,
       confirmed_by_user: false,
     };

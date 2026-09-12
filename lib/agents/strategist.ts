@@ -87,8 +87,8 @@ Tono: directo, profesional, orientado a resultados. Responde en español.`,
       prompt: `## Brief del negocio
 - Marca: ${ctx.brief.profile.brand_name}
 - Oferta: ${ctx.brief.profile.offer}
-- Categorías: ${ctx.brief.profile.categories.join(", ")}
-- Público: ${ctx.brief.profile.audience_signals.join(", ")}
+- Categorías: ${(ctx.brief.profile.categories ?? []).join(", ")}
+- Público: ${(ctx.brief.profile.audience_signals ?? []).join(", ")}
 - Objetivo: ${ctx.brief.objective}
 - Presupuesto: ${ctx.brief.budget ?? "No especificado"}
 - Mercado: ${ctx.workspace.market ?? "General"}
