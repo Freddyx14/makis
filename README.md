@@ -28,6 +28,21 @@ LLM, Exa, Meta, or service-role credentials in `NEXT_PUBLIC_*` variables.
 
 ## Current coverage and limits
 
+Use **Cargar demo KFC completa** in `/laboratorio` to create a private, prefilled
+scenario, or open `/nueva`, where the KFC mockup is preselected and the primary
+button opens `/laboratorio?campaign=<id>` with that exact campaign. Unchecking
+the mockup option preserves the original real Supabase workspace creation flow.
+The mock inputs are read-only to avoid implying edits change the fixed fixture.
+The laboratory URL parameter is checked by server-side campaign ownership.
+
+The KFC button creates a private, prefilled
+five-stage scenario. It invents all campaign inputs except the reference URL:
+S/12,000, four weeks, Lima, a fictional offer and audience. Nine copy pieces,
+three visual placeholders/prompts, a landing draft, three mock executions and
+112 daily channel rows are loaded without network/API calls. Approval records
+are simulated, not actual human approvals. The KFC site returned 403 during
+reference lookup; no menu, price, benchmark or result is presented as verified.
+
 - Stage 1: website/manual input, editable and versioned brief, explicit approval.
 - Stage 2: cached five-axis research; parallel strategy proposals and replies,
   Rector arbitration, human selection/editing, up to three fusions per debate.

@@ -2,6 +2,18 @@
 
 ### Next.js laboratory API bridge — 2026-09-12
 
+`POST /api/campaigns/mock-kfc` creates an owned synthetic campaign and full
+state. In `/nueva` mockup mode, session initialization precedes this call and
+navigation goes to `/laboratorio?campaign=<id>`. The lab prioritizes that parameter
+over the previously selected campaign; normal ownership checks still apply.
+Real `/api/workspaces` creation and its original redirect are retained separately.
+
+The endpoint creates the full
+workflow in one transaction. The hand-authored fixture validates brief/copy/
+strategy schemas, performs no network calls and records zero-token fixture
+traces, simulated approvals and mock executions. Existing campaigns are not
+overwritten. All reference claims and results are explicitly unverified.
+
 `app/laboratorio/page.tsx` renders the client campaign cockpit.
 `app/api/lab/[...path]/route.ts` proxies allowlisted session/login/campaign routes
 to server-only `LAB_API_URL`. It forwards the signed HTTP-only laboratory cookie,

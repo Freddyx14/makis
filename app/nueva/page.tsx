@@ -9,11 +9,12 @@ export default function NuevaPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mockDemo, setMockDemo] = useState(true);
   const [form, setForm] = useState({
-    url: "",
-    objective: "",
-    budget: "",
-    market: "",
+    url: "https://www.kfc.com.pe/",
+    objective: "Demo ficticia: impulsar pedidos digitales de una oferta para compartir en Lima durante cuatro semanas.",
+    budget: "S/12,000 PEN · campaña ficticia de 4 semanas",
+    market: "Lima, Perú / español · público de prueba 18–35 años",
   });
 
   async function handleSubmit(e: React.FormEvent) {
@@ -24,6 +25,19 @@ export default function NuevaPage() {
     setError(null);
 
     try {
+      if (mockDemo) {
+        const sessionResponse = await fetch("/api/lab/session", {cache:"no-store"});
+        const session = await sessionResponse.json();
+        if (!sessionResponse.ok) throw new Error(session.detail || "No se pudo conectar al laboratorio.");
+        if (!session.authenticated) throw new Error("Inicia sesión en /laboratorio y vuelve a esta pantalla para cargar el mockup.");
+        const response = await fetch("/api/lab/campaigns/mock-kfc", {
+          method:"POST", headers:{"Content-Type":"application/json"}, body:"{}",
+        });
+        const campaign = await response.json();
+        if (!response.ok) throw new Error(campaign.detail || "No se pudo cargar el mockup de KFC.");
+        router.push(`/laboratorio?campaign=${encodeURIComponent(campaign.id)}`);
+        return;
+      }
       const res = await fetch("/api/workspaces", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -67,6 +81,16 @@ export default function NuevaPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm text-brand-light">
+            <label className="flex gap-3 items-start cursor-pointer">
+              <input type="checkbox" checked={mockDemo} disabled={loading} onChange={e=>{
+                const enabled=e.target.checked;
+                setMockDemo(enabled);
+                setForm(enabled ? {url:"https://www.kfc.com.pe/",objective:"Demo ficticia: impulsar pedidos digitales de una oferta para compartir en Lima durante cuatro semanas.",budget:"S/12,000 PEN · campaña ficticia de 4 semanas",market:"Lima, Perú / español · público de prueba 18–35 años"} : {url:"",objective:"",budget:"",market:""});
+              }}/>
+              <span><strong>Usar mockup completo de KFC Perú</strong><br/>Datos y resultados inventados. Sin APIs, envíos ni publicaciones. Al continuar abrirás Laboratorio de campañas con las cinco etapas cargadas.</span>
+            </label>
+          </div>
           {/* URL */}
           <div>
             <label className="block text-brand-light/80 text-sm font-medium mb-2">
@@ -78,6 +102,7 @@ export default function NuevaPage() {
               required
               placeholder="https://youragency.com"
               value={form.url}
+              readOnly={mockDemo || loading}
               onChange={(e) => setForm({ ...form, url: e.target.value })}
               className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-brand-light placeholder-brand-light/40 focus:outline-none focus:border-brand-accent transition-colors"
             />
@@ -94,6 +119,7 @@ export default function NuevaPage() {
               rows={3}
               placeholder="Example: bring client delivery, cash and campaign work into one operating view"
               value={form.objective}
+              readOnly={mockDemo || loading}
               onChange={(e) => setForm({ ...form, objective: e.target.value })}
               className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-brand-light placeholder-brand-light/40 focus:outline-none focus:border-brand-accent transition-colors resize-none"
             />
@@ -109,6 +135,7 @@ export default function NuevaPage() {
               type="text"
               placeholder="Example: $500 USD"
               value={form.budget}
+              readOnly={mockDemo || loading}
               onChange={(e) => setForm({ ...form, budget: e.target.value })}
               className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-brand-light placeholder-brand-light/40 focus:outline-none focus:border-brand-accent transition-colors"
             />
@@ -124,6 +151,7 @@ export default function NuevaPage() {
               type="text"
               placeholder="Example: Peru, LATAM"
               value={form.market}
+              readOnly={mockDemo || loading}
               onChange={(e) => setForm({ ...form, market: e.target.value })}
               className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-brand-light placeholder-brand-light/40 focus:outline-none focus:border-brand-accent transition-colors"
             />
@@ -143,11 +171,11 @@ export default function NuevaPage() {
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Creating workspace...
+                {mockDemo ? "Cargando mockup…" : "Creating workspace..."}
               </>
             ) : (
               <>
-                Build operating context
+                {mockDemo ? "Abrir Laboratorio de campañas" : "Build operating context"}
                 <ArrowRight className="w-5 h-5" />
               </>
             )}

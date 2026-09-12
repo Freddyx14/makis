@@ -2,6 +2,15 @@
 
 ### Implemented campaign laboratory — 2026-09-12
 
+A one-click KFC Peru mock scenario preloads all five stages for presentation,
+and is the default demo path on `/nueva`: submit the prefilled form to open the
+campaign laboratory. The original real-workspace path remains available by
+disabling mockup mode. Inputs in mockup mode represent a fixed read-only fixture.
+The exact newly created campaign is selected via the laboratory URL.
+
+The scenario includes synthetic inputs, creative placeholders, metrics and approval records.
+This is a non-official offline fixture, not website analysis or market evidence.
+
 The Next.js `/laboratorio` route turns campaign specifications
 [01](docs/01-entrada-y-direccion.md) through [05](docs/05-analitica-y-optimizacion.md)
 into a reviewable five-stage demo. It preserves the private SQLite campaigns,

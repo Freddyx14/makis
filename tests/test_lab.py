@@ -99,6 +99,22 @@ class LabTests(unittest.TestCase):
         scheduled_mock_tick()
         self.assertEqual(len(self.state()["executions"]),1)
 
+    def test_kfc_fixture_is_complete_private_and_offline(self):
+        with patch("httpx.Client.post", side_effect=AssertionError("Fixture must be offline")):
+            response=self.client.post("/api/campaigns/mock-kfc",json={})
+        self.assertEqual(response.status_code,201,response.text)
+        cid=response.json()["id"]
+        state=self.client.get(f"/api/campaigns/{cid}/workflow").json()
+        self.assertEqual(len(state["pieces"]),9)
+        self.assertEqual(len(state["metrics"]),112)
+        self.assertAlmostEqual(sum(m["inversion"] for m in state["metrics"]),12000)
+        self.assertEqual(len(state["executions"]),3)
+        self.assertTrue(all(e["mode"]=="mock" for e in state["executions"]))
+        self.assertTrue(state["report"])
+        self.assertEqual(state["search_count"],0)
+        self.assertFalse(state["landing"]["published"])
+        self.assertTrue(all(not f["fuente"] for f in state["research"]["hallazgos"]))
+
 
 if __name__=="__main__":
     unittest.main()

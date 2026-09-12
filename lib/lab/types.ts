@@ -14,7 +14,7 @@ export interface Strategy {id:string; perfil:string; version:number; contenido:S
 export interface Copy {titulo:string; cuerpo:string; cta:string; hashtags:string[]; justificacion:string}
 export interface Piece {id:string; tipo:string; canal:string; estado:string; version:number; contenido:Copy; programada_para:string|null; historial:unknown[]; mode:string}
 export interface Metric {canal:string; fecha:string; impresiones:number; clics:number; leads:number; clientes:number; inversion:number; ingresos:number; origen:string; estimado:boolean; cpl:number|null; cac:number|null; roas:number|null; ctr:number|null}
-export interface Workflow {version:number; mode:string; research:null|{hallazgos:{eje:string; texto:string; fuente:string; confianza:string}[]; huecos:string[]};
+export interface Workflow {version:number; mode:string; demo_reference?:{name:string;url:string;warning:string}; mock_visuals?:{title:string;format:string;prompt:string}[]; research:null|{hallazgos:{eje:string; texto:string; fuente:string; confianza:string}[]; huecos:string[]};
   strategies:Strategy[]; selected:string|null; fusion_count:number; search_count:number; iteration:number;
   arbitration:null|{recomendacion:string; confianza:string; justificacion:string; critica_conservadora:string; critica_arriesgada:string; supuestos_sin_respaldo:string[]; sugerencia_fusion:string};
   debate:unknown[]; pieces:Piece[]; executions:{id:string; piece_id:string; canal:string; mode:string; estado:string; fecha:string; payload:unknown}[];

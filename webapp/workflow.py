@@ -192,6 +192,19 @@ def scheduled_mock_tick():
 def build_router(session_owner, campaign_for, latest, now, progress):
     router = APIRouter()
 
+    @router.post("/api/campaigns/mock-kfc", status_code=201)
+    def create_kfc(owner=Depends(session_owner)):
+        from .mock_kfc import fixture
+        cid = str(uuid4())
+        input_data, brief, state = fixture(cid)
+        with db.connect() as conn:
+            conn.execute("INSERT INTO campaigns VALUES (?,?,?,?,?)", (cid, owner, db.dumps(input_data), "ready_for_research", now()))
+            conn.execute("INSERT INTO briefs(campaign_id,version,contenido,source,created_at,aprobado_at) VALUES (?,?,?,?,?,?)", (cid, 1, db.dumps(brief), "demo", now(), now()))
+            save(conn, cid, state, 0)
+            for stage in range(1,6):
+                conn.execute("INSERT INTO agent_runs VALUES (?,?,?,?,?,?,?,?,?,?)", (str(uuid4()),cid,stage,db.dumps({"fixture":"KFC mockup; no agent called"}),db.dumps({"simulado":True,"nota":"Resultado precargado, revisión y aprobación ficticias."}),"fixture-kfc-no-llm",0,0,"completed",now()))
+        return {"id":cid}
+
     @router.get("/api/campaigns/{cid}/workflow")
     def get_state(cid: str, owner=Depends(session_owner)):
         with db.connect() as conn:
