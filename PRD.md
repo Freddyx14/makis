@@ -1,303 +1,242 @@
-# Makis - Product Requirements Document
-## Sistema operativo agéntico para el back-office del fundador
+# Mark AI — Product Requirements Document
+## The agentic operating environment for agency founders
 
-> **Versión:** 6.1.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)
-> **Equipo:** Maki Acevichado (Joel Espinoza · Diego Celis · Miluska R. · Freddy Ñañez)  
+> **Version:** 6.3.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)
+> **Team:** Maki Acevichado (Joel Espinoza · Diego Celis · Miluska R. · Freddy Ñañez)
 > **Stack:** FastAPI · OpenAI Agents SDK · Google Workspace MCP · Exa Search · Resend · SQLite · Chart.js
 
----
+## 1. Product thesis
 
-## 1. La idea
+**Mark AI is the operating environment for a marketing-agency founder.** It brings together the context normally split across email, documents, calendars, spreadsheets and people, then presents the decision needing founder attention.
 
-**Makis es el Chief of Staff operativo del fundador.** En lugar de pedirle que persiga correos, contratos, reuniones, cobros, pendientes y documentos dispersos, Makis reúne el contexto de la empresa y le presenta qué necesita una decisión.
+The founder starts by pasting an agency website. Mark AI builds a company workspace, connects authorized Google Workspace sources, and turns fragmented signals into a governed action queue. It does not replace judgment or autonomously take sensitive action. It prepares context, proposes the next step, and preserves a human-readable approval record.
 
-El fundador comienza pegando la URL de su empresa. Makis entiende el negocio, construye su workspace y, cuando se conecta a Google Workspace, cruza Gmail, Calendar, Drive y Sheets para convertir señales dispersas en una cola de acciones gobernable.
+**Markdown is the source of truth. The UI turns that truth into a clear operating surface.**
 
-No reemplaza al fundador ni ejecuta decisiones sensibles por su cuenta. Prepara contexto, propone acciones y conserva una trazabilidad legible de lo que se aprobó.
+## 2. Problem
 
-**Markdown conserva la fuente de verdad; la UI convierte esa verdad en una superficie clara para operar.**
+Small agencies do not lack information. They lack one view that connects information to the next decision.
 
-## 2. Problema que resuelve
+| Source | Typical information | Failure today |
+|---|---|---|
+| Gmail | requests, invoices, commitments | follow-ups are lost |
+| Calendar | meetings and deadlines | preparation and follow-through are missing |
+| Drive | contracts, proposals, deliverables | context cannot be found when needed |
+| Sheets | pipeline, cash and metrics | numbers do not trigger action |
+| Founder memory | priorities and exceptions | the business depends on one person remembering everything |
 
-El back-office de una empresa pequeña suele vivir en fragmentos:
+Mark AI rests on three primitives:
 
-- Gmail contiene solicitudes, cobros y compromisos.
-- Calendar contiene reuniones, pero no siempre la preparación ni el seguimiento.
-- Drive contiene contratos, propuestas y entregables difíciles de encontrar.
-- Sheets contiene ventas, caja o métricas sin una lectura operativa.
-- La cabeza del fundador sostiene prioridades que no están en ningún sistema.
+1. Agencies already produce operational evidence in their website and work tools.
+2. Agents can transform that evidence into structured operational state.
+3. Founders retain review and approval for consequential actions.
 
-El resultado no es falta de información. Es falta de una vista que conecte la información con la siguiente decisión.
+It is neither a generic chatbot nor a standalone campaign manager. It is a contextual cockpit with focused operational modules.
 
-Makis reduce el problema a tres primitivas:
-
-1. La empresa ya produce evidencia en su web y herramientas de trabajo.
-2. Los agentes pueden convertir esa evidencia en estado operativo estructurado.
-3. El fundador debe conservar la revisión y aprobación de cada acción relevante.
-
-No es un chatbox. Es un cockpit contextual que vive junto al trabajo de la empresa.
-
-## 3. Flujo principal: URL a cockpit operativo
+## 3. Primary flow: website to operating cockpit
 
 ~~~mermaid
 flowchart LR
-    A["1. Pega la URL"] --> B["2. Makis entiende el negocio"]
-    B --> C["3. Crea el workspace base"]
-    C --> D["4. Conecta contexto de Workspace"]
-    D --> E["5. Prioriza señales y propone acciones"]
-    E --> F["6. Fundador revisa, edita y aprueba"]
-    F --> G["7. Registra resultado y aprende"]
-    G -. aprendizaje .-> E
+    A["1. Paste agency URL"] --> B["2. Mark AI understands the business"]
+    B --> C["3. Create workspace"]
+    C --> D["4. Connect approved context"]
+    D --> E["5. Prioritize signals and propose actions"]
+    E --> F["6. Founder reviews, edits and approves"]
+    F --> G["7. Record outcome and learn"]
+    G -. feedback .-> E
 ~~~
 
-### 3.1 URL primero
+### 3.1 Website-first onboarding
 
-La pantalla inicial tiene un campo dominante: **“Pega el sitio de tu empresa”**. La URL permite crear el perfil inicial sin un formulario largo:
+The first screen has one dominant field: **“Paste your agency website.”** The URL creates a first profile without a long form:
 
-- nombre, oferta y categoría;
-- equipo, clientes o mercados visibles;
-- tono, activos y llamados a la acción;
-- hipótesis iniciales sobre la operación.
+- agency name, offer and category;
+- visible team, clients and markets;
+- tone, public assets and calls to action;
+- initial operational hypotheses.
 
-El fundador solo confirma o corrige lo que Makis entendió. Después puede conectar fuentes de trabajo autorizadas, empezando por Google Workspace.
+The founder confirms or corrects the profile, then connects approved sources beginning with Google Workspace.
 
-### 3.2 Contexto conectado
+### 3.2 Connected context
 
-Makis usa conectores MCP de Google Workspace para leer el contexto necesario:
-
-| Fuente | Señales que Makis organiza | Acción propuesta |
+| Source | Signals Mark AI organizes | Proposed action |
 |---|---|---|
-| Gmail | correos sin respuesta, facturas vencidas, promesas hechas | preparar borrador o seguimiento |
-| Calendar | reuniones próximas, espacios sin preparación, compromisos | preparar agenda o reservar bloque |
-| Drive | contratos, propuestas, documentos pendientes | resumir, ubicar o crear estructura |
-| Sheets | caja, ventas, pipeline y métricas | señalar cambio, riesgo o decisión |
+| Gmail | unanswered messages, overdue invoices, promises made | draft a follow-up |
+| Calendar | upcoming meetings, unprepared sessions, commitments | prepare agenda or reserve time |
+| Drive | contracts, proposals and missing documents | summarize, locate or create structure |
+| Sheets | cash, sales, pipeline and operating metrics | flag a change, risk or decision |
 
-Las acciones con impacto externo, como enviar un correo o crear un evento, requieren aprobación explícita del fundador.
+External-impact actions such as sending email, publishing content, spending budget or creating an event require explicit founder approval.
 
-### 3.3 Workspace autoconfigurado
+### 3.3 Generated workspace
 
-Makis crea documentos legibles, versionables y auditables:
-
-~~~
-workspace/<empresa>/
-├── account.md                  # estado actual, dueño, bloqueos y próximo hito
-├── operations/                 # pulso, reuniones, tareas y procedimientos
-├── clients/<slug>/account.md   # cada cliente, acuerdo y siguiente paso
-├── finance/                    # caja, cobros, vencimientos y supuestos
-├── documents/                  # contratos, propuestas y archivos clave
-├── decisions.md                # decisiones abiertas y cerradas con su razón
-├── activity.jsonl              # eventos y cambios cronológicos
-└── learnings.md                # patrones para la próxima iteración
+~~~text
+workspace/<agency>/
+├── account.md                   # current state, owner, blockers, next milestone
+├── operations/                  # pulse, meetings, tasks and procedures
+├── clients/<slug>/account.md    # client agreement, state and next step
+├── finance/                     # cash, collections, expenses and assumptions
+├── legal/                       # contracts, IP and review status
+├── documents/                   # proposals and key files
+├── decisions.md                 # open and closed decisions with rationale
+├── activity.jsonl               # chronological events and approvals
+└── learnings.md                 # patterns for the next iteration
 ~~~
 
-SQLite indexa artefactos, versiones, fuentes, aprobaciones y eventos. No reemplaza los documentos: permite que Makis recupere el contexto correcto y explique de dónde salió cada recomendación.
+SQLite indexes artifacts, versions, sources, approvals and events. It never replaces documents; it makes the right context retrievable and explainable.
 
-### 3.4 Patrones operativos que Makis adopta
+## 4. One platform, departments with different depth
 
-El producto toma inspiración de una operación documental madura, pero la simplifica para un fundador:
+The default view is for the founder: a simple surface to ask, decide and see the entire agency. It should not expose departmental production complexity by default.
 
-| Patrón | Contrato de Makis | Beneficio |
-|---|---|---|
-| Un solo hogar canónico | Cada cliente, documento, decisión y métrica tiene una ubicación fuente | Evita copias que divergen |
-| Account por entidad | La empresa y cada cliente tienen un account.md con estado actual, responsable, bloqueos y próximo hito | El cockpit puede responder “qué pasa ahora” |
-| Decisiones separadas de tareas | decisions.md conserva la pregunta, dueño, opciones, impacto, decisión y razón | No se confunde una decisión pendiente con una tarea |
-| Historial de actividad | activity.jsonl registra cambios, aprobaciones y ejecuciones | Se puede explicar qué cambió y cuándo |
-| Skills con contrato | Cada skill declara entradas, salidas, permisos y verificación | El agente ejecuta un flujo repetible, no una improvisación |
+When the founder or a functional owner needs deep work, they enter a focused department. Every department reads the same clients, documents, decisions and activity. None creates a parallel record of reality.
 
-Una vista puede agrupar información de varios lugares, pero nunca duplica ni se vuelve fuente de verdad. Si un fundador necesita ver el cliente, su contrato y el cobro juntos, Makis muestra una vista derivada con enlaces a los originales.
-
-### 3.5 Documentación que se ve como producto
-
-La experiencia principal no es un explorador de archivos. Makis renderiza cada documento según su propósito:
-
-| Documento fuente | Vista de la UI | Acción humana |
-|---|---|---|
-| Perfil | Ficha de empresa y contexto confirmado | corregir supuestos |
-| Accounts | Estado de la empresa, cliente o proyecto | actualizar hito, dueño o bloqueo |
-| Pulso semanal | Panel de prioridades, riesgos y oportunidades | ordenar la semana |
-| Clientes y compromisos | Cola de seguimientos y responsables | aprobar seguimiento |
-| Caja y cobros | Tarjetas de vencimientos y movimiento | aprobar recordatorio |
-| Reuniones | Agenda con preparación y próximos pasos | preparar o bloquear tiempo |
-| Documentos clave | Buscador con resumen y vínculos | abrir, compartir o crear |
-| Decisiones | Registro de decisión, motivo y resultado | confirmar criterio |
-| Actividad | Línea de tiempo de cambios y ejecuciones | auditar o revertir una acción |
-
-Un cambio aprobado desde la UI actualiza el Markdown y deja una nueva versión. No existen dos fuentes de verdad.
-
-## 4. Arquitectura funcional en cinco fases
-
-### Fase 1. Perfil de empresa
-
-**Entrada:** URL y una confirmación breve del fundador.  
-**Agente:** Director.  
-**Salida:** perfil de empresa con el contexto inicial.
-
-### Fase 2. Ingesta de back-office
-
-**Entrada:** fuentes conectadas y permisos aprobados.  
-**Agentes:** conectores y extractor.  
-**Salida:** señales estructuradas de Gmail, Calendar, Drive y Sheets con referencia a la fuente.
-
-### Fase 3. Pulso y prioridades
-
-**Entrada:** perfil más señales actuales.  
-**Agente:** Chief of Staff.  
-**Salida:** pulso semanal, riesgos, compromisos, cobros y una cola priorizada de acciones.
-
-### Fase 4. Revisión y ejecución humana
-
-**Entrada:** acciones propuestas.  
-**Experiencia:** contexto, borrador, impacto y controles Aprobar / Editar / Rechazar.  
-**Salida:** acción aprobada, por ejemplo un borrador de correo, una estructura de Drive o un bloque de Calendar.
-
-### Fase 5. Resultado y aprendizaje
-
-**Entrada:** resultado de una acción, feedback del fundador o datos operativos.  
-**Agente:** analista.  
-**Salida:** decisión registrada, regla o aprendizaje que mejora la priorización siguiente.
-
-## 5. Experiencia de interfaz
-
-La experiencia tiene tres momentos:
-
-1. **Onboarding desde URL:** perfil rápido de empresa y conexión opcional de fuentes.
-2. **Founder cockpit:** cinco indicadores operativos: caja, clientes, operaciones, calendario y documentos. Una sola cola de prioridades evita que el fundador salte entre pestañas.
-3. **Panel de acción:** cada propuesta muestra evidencia, borrador, impacto y control humano.
-
-CopilotKit puede ofrecer una capa conversacional contextual dentro del cockpit, pero no es el producto. El valor principal está en que Makis ve el estado real de la empresa y lleva al fundador a la decisión que requiere su atención.
-
-### 5.1 Biblioteca de skills operativas
-
-Makis presenta sus capacidades como skills visibles y acotadas. Una skill no es un agente misterioso: expone qué lee, qué propone, qué puede ejecutar y qué aprobación necesita.
-
-Ejemplos para el demo:
-
-| Skill | Lee | Propone | Requiere aprobación |
+| Layer | Primary user | Purpose | Example |
 |---|---|---|---|
-| Pulso del fundador | accounts, Calendar, Gmail y caja | tres prioridades de la semana | no, si solo lee |
-| Cobro pendiente | factura, acuerdo y conversación | borrador de seguimiento | sí, antes de enviar |
-| Preparar reunión | Calendar, account y documentos | agenda, contexto y próximos pasos | no, si solo prepara |
-| Registrar decisión | pulso y feedback del fundador | entrada estructurada en decisions.md | sí, antes de cerrar |
+| Founder cockpit | Founder | understand, prioritize and approve across the agency | “Which client, cash risk or legal decision needs me?” |
+| Department module | Functional owner or founder in focus mode | execute an end-to-end workflow | Campaigns: brief, assets, review, media and results |
+| Skills and agents | System | perform constrained work over authorized sources | prepare a meeting, draft a collection email, analyze performance |
 
-Este modelo permite que el fundador sepa qué está haciendo Makis y que el equipo agregue nuevas capacidades sin convertir el cockpit en un chat genérico.
+### 4.1 Department map
 
-### 5.2 Modo de trabajo por cliente o proyecto
-
-Un fundador no opera solo la empresa en abstracto. Opera clientes, proyectos, proveedores y decisiones que no deben contaminarse entre sí. Makis debe ofrecer un modo de enfoque inspirado en el ciclo cargar, trabajar y cerrar:
-
-| Momento | Capacidad de Makis | Regla de producto |
+| Department | What it governs | Initial workflows |
 |---|---|---|
-| Abrir contexto | El fundador elige un cliente o proyecto. Makis carga primero su account.md y después el plan, la actividad reciente, los compromisos y los documentos más relevantes. | Solo lectura. La pantalla entrega un briefing breve antes de proponer trabajo. |
-| Trabajar en foco | Las skills leen únicamente el workspace abierto y sus fuentes autorizadas. | Un contexto activo a la vez para evitar que información o acciones de un cliente aparezcan en otro. |
-| Cerrar contexto | Makis resume lo hecho, propone actualizar estado actual, actividad, decisiones, pendientes y siguiente hito. | Nada se escribe ni se ejecuta sin revisión del fundador. |
-| Retomar | La siguiente sesión abre el account.md actualizado y el handoff más reciente. | El usuario no debe redescubrir el estado ni explicar otra vez el trabajo anterior. |
+| Commercial | leads, discovery, proposals, pipeline and closing | research, discovery prep, proposal, follow-up and close |
+| Delivery and operations | active clients, scope, milestones, meetings and blockers | open client, plan delivery, prepare meeting, handoff and close session |
+| Finance and tax | cash, receivables, expenses, invoices, obligations and assumptions | cash pulse, collection, expense approval and due-date tracking |
+| Legal | contracts, NDAs, IP assignments, risks and signatures | prepare draft, check agreement data and escalate legal advice |
+| Marketing and campaigns | strategy, brand, content, creative, paid media and performance | client → brief → plan → production → review → approved media → results |
+| Team and capacity | collaborators, owners, availability and workload | assign owner, detect overload and plan capacity |
 
-La interfaz puede ofrecer estas capacidades como comandos claros:
+**Campaigns is the first end-to-end module to build for the demo.** It receives a client and its context, prepares strategy and assets, coordinates creative work, executes or prepares approved media, and records results for the next iteration.
 
-- **Abrir cliente:** carga un briefing con quién es, estado actual, qué espera esa persona, pendiente interno, bloqueos y archivos clave.
-- **Cerrar sesión de cliente:** prepara el snapshot de estado, agrega el registro cronológico y propaga solo los cambios que realmente ocurrieron.
-- **Dejar handoff:** escribe un punto de retome breve con pendientes, decisiones, artefactos y los primeros pasos de la próxima sesión.
+When a client is onboarded, Mark AI creates a workspace and connects accounts, documents, commitments, brand context, commercial scope and collection status. Every department then works from the same client reality.
 
-El diseño separa tres artefactos que suelen mezclarse:
+## 5. Documentation as product
 
-1. **Account:** fotografía actual y corta de una entidad.
-2. **Actividad:** historia cronológica de qué pasó.
-3. **Handoff:** instrucciones de retome para una persona o sesión futura.
+Mark AI renders documentation according to purpose. It is not a file explorer.
 
-Esta separación es importante para el fundador: puede preguntar “qué está bloqueado hoy” sin leer toda la historia, y luego abrir la evidencia si necesita entender el porqué.
-
-### 5.3 Founder Council
-
-El cockpit diario responde qué hacer dentro de un contexto. El Founder Council responde una pregunta distinta: **qué merece el tiempo y la firma del fundador en toda la empresa**.
-
-El producto de esta corrida son decisiones, no documentos ni gráficos. Si Makis no detecta una decisión accionable, debe decirlo de forma explícita en lugar de rellenar la pantalla con análisis.
-
-| Modo | Pregunta que responde | Salida |
+| Source document | UI view | Human action |
 |---|---|---|
-| Consejo | ¿Qué necesita mi firma esta semana? | máximo tres decisiones con recomendación y costo de esperar |
-| Decidir una | ¿Cómo cierro esta decisión concreta? | opciones reales, evidencia, recomendación y condición para reabrirla |
-| Capital | ¿Dónde está el dinero y qué gasto no se gana su lugar? | cobrado, por cobrar, gasto recurrente y dato desconocido claramente marcado |
-| Portafolio | ¿Qué frente merece horas y cuál se pausa? | veredicto propuesto para clientes, iniciativas y proyectos |
+| Company or client account | entity status | update milestone, owner or blocker |
+| Weekly pulse | priorities and risks | order the week |
+| Client commitments | follow-up queue | approve a follow-up |
+| Cash and collections | due-date cards and movement | approve reminder |
+| Meetings | prepared agenda and next steps | prepare or block time |
+| Key documents | search with summary and links | open, share or create |
+| Decisions | question, rationale and result | confirm decision |
+| Activity | timeline of changes and execution | audit action |
 
-Cada decisión propuesta tiene un contrato:
+Approved UI changes update the related Markdown and write a new version. There are never two sources of truth.
 
-1. Una pregunta que pueda responderse.
-2. Un solo dueño y una fecha próxima.
-3. Evidencia enlazada o una incertidumbre declarada.
-4. Dos o tres opciones reales, incluyendo no hacer nada cuando aplique.
-5. Una recomendación, su porqué y qué tendría que cambiar para reabrirla.
-6. El costo de esperar.
+### 5.1 Operational document contracts
 
-Makis propone. El fundador decide. Después de la firma, Makis registra qué se decidió, por qué y qué archivos o acciones deben actualizarse. Nunca transforma una recomendación en una acción viva sin la aprobación correspondiente.
+| Pattern | Mark AI contract | Benefit |
+|---|---|---|
+| Canonical home | each client, document, decision and metric has one source location | no divergent copies |
+| Account per entity | agency and every client has an `account.md` with state, owner, blocker and next milestone | cockpit answers “what is happening now?” |
+| Decisions separate from tasks | `decisions.md` stores question, owner, options, impact and rationale | decisions are not mistaken for tasks |
+| Activity history | `activity.jsonl` records changes, approvals and execution | explain what changed and when |
+| Contracted skills | every skill declares input, output, permission and verification | repeatable flows rather than improvisation |
 
-El Council también busca contradicciones operativas: una decisión declarada que no se ejecutó, una regla que entra en conflicto con un documento vivo o una prioridad que consume horas sin justificarlo. Esas contradicciones merecen atención antes de crear otra tarea.
+## 6. Product experience
 
-## 6. Límites y guardrails
+1. **Website onboarding:** rapid profile and optional source connection.
+2. **Founder cockpit:** contextual conversation plus a compact view of Commercial, Delivery, Finance, Legal, Marketing and Capacity.
+3. **Departments and modules:** clear entrances to focused work without turning the cockpit into a technical console.
+4. **Action review:** every proposal includes evidence, draft, impact and Approve / Edit / Reject controls.
 
-- Makis puede leer, sintetizar, preparar y recomendar dentro de las fuentes autorizadas.
-- Makis nunca envía correos, crea eventos, mueve archivos, paga, firma, publica ni borra sin aprobación explícita.
-- Toda recomendación debe conservar una referencia a su evidencia.
-- Si la información es incompleta o contradictoria, Makis lo señala como incertidumbre en vez de inventar una respuesta.
-- El fundador puede corregir una conclusión y ese feedback actualiza el aprendizaje, no solo la conversación.
+The founder can ask about clients, sales, finance, tax, contracts, delivery, campaigns or team capacity. Every answer is grounded in the connected workspace and routes to an entity, document or concrete action.
 
-## 7. Arquitectura técnica
+### 6.1 Visible skill library
 
+| Skill | Reads | Proposes | Requires approval |
+|---|---|---|---|
+| Founder pulse | accounts, Calendar, Gmail and cash | three weekly priorities | no, read-only |
+| Collection follow-up | invoice, agreement and conversation | follow-up draft | yes, before sending |
+| Meeting preparation | Calendar, account and documents | agenda, context and next steps | no, preparation only |
+| Decision log | pulse and founder feedback | structured `decisions.md` entry | yes, before closing |
+| Campaign creation | client account, brand, goals and commercial context | brief, plan and production workflow | yes, before publishing or spending |
+| Contract review | agreement, proposal and approved template | draft, missing fields and flags | yes, before sending or signing |
+| Cash pulse | receivables, expenses, invoices and dates | cash position, risk and next actions | no, read-only |
+
+### 6.2 Focus mode by client or project
+
+| Moment | Mark AI capability | Product rule |
+|---|---|---|
+| Open context | load account, recent activity, commitments and key documents | read-only briefing before work |
+| Work in focus | skills read only the open workspace and approved sources | one active client context prevents leakage |
+| Close context | propose updates to state, activity, decisions, pending work and next milestone | nothing writes or executes without review |
+| Resume | open the updated account and latest handoff | the user does not rediscover the work |
+
+Account is the current snapshot. Activity is chronological history. Handoff is the next-session restart point.
+
+### 6.3 Founder Council
+
+The daily cockpit answers what to do inside a context. The Founder Council answers what deserves the founder’s time and signature across the company.
+
+| Mode | Question | Output |
+|---|---|---|
+| Council | What needs my signature this week? | at most three decisions with recommendation and cost of waiting |
+| Decide one | How do I close this decision? | options, evidence, recommendation and reopen condition |
+| Capital | Where is the money and which expense has not earned its place? | collected, receivable, recurring spend and explicitly marked unknowns |
+| Portfolio | What deserves hours and what pauses? | proposed verdict for clients, initiatives and projects |
+
+Every proposed decision has an answerable question, one owner and date, linked evidence or declared uncertainty, two or three real options, a recommendation and reopen condition, and a cost of waiting.
+
+Mark AI proposes. The founder decides. After approval, it records what changed and which artifacts or actions need updating. It surfaces operational contradictions before creating another task.
+
+## 7. Guardrails
+
+- Mark AI can read, summarize, prepare and recommend within authorized sources.
+- It never sends email, creates events, moves files, pays, signs, publishes or deletes without explicit approval.
+- Every recommendation retains a source reference.
+- Incomplete or conflicting information is marked as uncertainty, never invented.
+- Legal workflows prepare drafts and flags; they do not provide legal advice or replace professional review.
+- Founder corrections update the learning record, not only the conversation.
+
+## 8. Technical architecture
+
+~~~text
+mark-ai/
+├── main.py                      # API and cockpit orchestration
+├── agents/                      # director, chief of staff, documenter, analyst
+├── integrations/                # Google Workspace MCP, Exa, Resend
+├── services/                    # workspace store and action queue
+├── skills/                      # pulse, collections, meetings and decisions
+├── modules/campaigns/           # end-to-end client campaign workflow
+├── frontend/                    # onboarding, cockpit, review and documents
+├── workspaces/
+└── data/mark-ai.db              # index, events and approvals
 ~~~
-makis/
-├── main.py                      # API y orquestación del cockpit
-├── agents/
-│   ├── director.py              # URL a perfil de empresa
-│   ├── chief_of_staff.py        # señales a prioridades y acciones
-│   ├── documenter.py            # estado a Markdown versionado
-│   └── analyst.py               # resultado a aprendizaje
-├── integrations/
-│   ├── google_workspace_mcp.py  # Gmail, Calendar, Drive y Sheets
-│   ├── exa_client.py            # investigación externa cuando aporte contexto
-│   └── resend_client.py         # ejecución de correo aprobada
-├── services/
-│   ├── workspace_store.py       # Markdown, versiones y enlaces
-│   └── action_queue.py          # propuestas, aprobaciones y auditoría
-├── skills/
-│   ├── founder_pulse.py         # prioridades y riesgos de la semana
-│   ├── collections.py           # cobros y seguimientos propuestos
-│   ├── meeting_prep.py          # preparación contextual de reuniones
-│   └── decision_log.py          # registro de decisiones aprobado
-├── frontend/
-│   ├── onboarding/              # URL, perfil y conexiones
-│   ├── cockpit/                 # vista operativa del fundador
-│   ├── action-review/           # aprobar, editar o rechazar
-│   └── documents/               # Markdown renderizado
-├── workspaces/                  # documentos y activos por empresa
-└── data/makis.db                # índice, eventos y aprobaciones
-~~~
 
-## 8. Criterios de éxito para el demo
+## 9. Demo success criteria
 
-- Una URL crea un perfil de empresa y workspace visible en menos de un minuto.
-- El cockpit muestra al menos una señal de Gmail, Calendar, Drive y Sheets, o sus equivalentes deterministas de demo.
-- El fundador ve una cola priorizada de acciones con evidencia y contexto.
-- La vista de una entidad muestra su account.md, decisiones, actividad y documentos sin crear copias.
-- El fundador puede abrir un cliente, recibir un briefing read-only y cerrarlo con estado, actividad y handoff propuestos.
-- Makis impide que una skill use información de dos clientes o proyectos a la vez salvo que el fundador abra una vista de cartera explícita.
-- El Founder Council devuelve como máximo tres decisiones accionables, cada una con evidencia, recomendación, dueño y costo de esperar.
-- Una acción se edita y se aprueba; su resultado queda trazado en el Markdown correspondiente.
-- El sistema propone un aprendizaje operativo, por ejemplo un patrón de cobro tardío o una reunión que siempre requiere preparación.
-- El demo muestra que el valor depende del contexto conectado, no de una conversación aislada.
+- An agency URL creates a visible company profile and workspace in under one minute.
+- The cockpit shows Gmail, Calendar, Drive and Sheets signals, or deterministic demo equivalents.
+- The founder sees a prioritized action queue with evidence and context.
+- The cockpit presents Commercial, Delivery, Finance, Legal, Marketing and Capacity as one connected agency.
+- A client can be opened, briefed read-only and closed with proposed state, activity and handoff.
+- Only one client or project is active unless the founder explicitly opens portfolio view.
+- Founder Council returns at most three actionable decisions, each with evidence, recommendation, owner and cost of waiting.
+- A plain-language question lands on the relevant entity, document or action.
+- Client onboarding enables end-to-end Campaigns without rebuilding context.
+- Human-edited and approved actions leave a trace in Markdown.
 
-## 9. Roles del equipo
+## 10. Team roles
 
-| Miembro | Responsabilidad |
+| Team member | Responsibility |
 |---|---|
-| Joel Espinoza | Orquestación, SQLite, analítica y aprendizaje |
-| Diego Celis | FastAPI, conectores, extracción y contexto estructurado |
-| Miluska R. | Onboarding, founder cockpit, renderizado y revisión humana |
-| Freddy Ñañez | Arquitectura de producto, prioridades operativas, demo y pitch |
+| Joel Espinoza | orchestration, SQLite, analytics and learning |
+| Diego Celis | FastAPI, connectors, extraction and structured context |
+| Miluska R. | onboarding, founder cockpit, document rendering and human review |
+| Freddy Ñañez | product architecture, operating priorities, demo and pitch |
 
-## 10. Guion de demo de tres minutos
+## 11. Three-minute demo
 
-1. **0:00-0:25.** “El fundador no necesita otro chat. Necesita saber qué requiere su decisión antes de abrir cinco herramientas.”
-2. **0:25-0:50.** Pegar la URL, mostrar el perfil detectado y confirmar el negocio.
-3. **0:50-1:20.** Entrar al cockpit: una factura vencida en Gmail, una reunión sin preparación en Calendar y el contrato relacionado en Drive.
-4. **1:20-1:55.** Abrir la acción propuesta. Makis muestra evidencia, prepara el borrador de seguimiento y el fundador lo ajusta y aprueba.
-5. **1:55-2:30.** Mostrar el registro Markdown actualizado, la decisión guardada y el pulso semanal que cambia.
-6. **2:30-3:00.** “Makis no responde desde una caja de chat. Convierte el back-office de la empresa en un sistema que el fundador puede gobernar.”
+1. **0:00–0:25.** “A founder does not need another chat. They need to know what requires a decision before opening five tools.”
+2. **0:25–0:50.** Paste the agency URL, show the detected profile and confirm it.
+3. **0:50–1:20.** Open the cockpit: overdue invoice, unprepared meeting and related contract.
+4. **1:20–1:55.** Open a proposed action. Mark AI shows evidence, prepares a follow-up, and the founder edits and approves it.
+5. **1:55–2:30.** Open Campaigns: client context becomes a brief, plan, production path and approved execution.
+6. **2:30–3:00.** “Mark AI turns the agency back office into a system the founder can govern.”
