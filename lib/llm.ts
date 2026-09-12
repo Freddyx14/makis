@@ -1,8 +1,10 @@
 /**
- * Capa de modelos — OpenCode Zen + Gemini fallback.
+ * Capa de modelos — OpenCode Zen + OpenRouter + Gemini fallback.
  *
- * Zen es un gateway compatible con la API de OpenAI. Si falla (free tier
- * restringido, sin créditos, etc.), se cae a Google Gemini automáticamente.
+ * Cadena de prioridad:
+ *   1. OpenCode Zen (mimo-v2.5-free)
+ *   2. OpenRouter (modelos gratuitos)
+ *   3. Google Gemini (gratis)
  *
  * REGLA: ningún nombre de modelo hardcodeado fuera de este archivo.
  */
@@ -13,22 +15,29 @@ import { GoogleGenAI } from "@google/genai";
 import type { z } from "zod";
 
 const ZEN_BASE_URL = "https://opencode.ai/zen/v1";
+const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
 
-let _client: OpenAI | null = null;
+let _zenClient: OpenAI | null = null;
+let _openrouterClient: OpenAI | null = null;
 let _gemini: GoogleGenAI | null = null;
 
-function client(): OpenAI {
-  if (_client) return _client;
+function zenClient(): OpenAI {
+  if (_zenClient) return _zenClient;
   const apiKey = process.env.OPENCODE_API_KEY;
   if (!apiKey) throw new Error("OPENCODE_API_KEY no está configurada");
-  _client = new OpenAI({
-    apiKey,
-    baseURL: process.env.OPENCODE_BASE_URL ?? ZEN_BASE_URL,
-  });
-  return _client;
+  _zenClient = new OpenAI({ apiKey, baseURL: ZEN_BASE_URL });
+  return _zenClient;
 }
 
-function gemini(): GoogleGenAI {
+function openrouterClient(): OpenAI {
+  if (_openrouterClient) return _openrouterClient;
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY no está configurada");
+  _openrouterClient = new OpenAI({ apiKey, baseURL: OPENROUTER_BASE_URL });
+  return _openrouterClient;
+}
+
+function geminiClient(): GoogleGenAI {
   if (_gemini) return _gemini;
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) throw new Error("GOOGLE_API_KEY no está configurada");
@@ -66,9 +75,8 @@ async function geminiGenerateObject<T>(opts: {
   prompt: string;
   temperature?: number;
 }): Promise<{ data: T; usage: LlmUsage }> {
-  const ai = gemini();
+  const ai = geminiClient();
   const model = process.env.MAKIS_GEMINI_MODEL ?? "gemini-2.5-flash";
-
   const fullPrompt = `${opts.system}\n\n${opts.prompt}`;
   const response = await ai.models.generateContent({
     model,
@@ -79,14 +87,8 @@ async function geminiGenerateObject<T>(opts: {
       responseSchema: opts.schema,
     },
   });
-
-  const text = response.text ?? "";
-  const parsed = JSON.parse(text) as T;
-
-  return {
-    data: parsed,
-    usage: { model: `gemini:${model}`, tokens_in: 0, tokens_out: 0 },
-  };
+  const parsed = JSON.parse(response.text ?? "{}") as T;
+  return { data: parsed, usage: { model: `gemini:${model}`, tokens_in: 0, tokens_out: 0 } };
 }
 
 async function geminiGenerateText(opts: {
@@ -94,24 +96,19 @@ async function geminiGenerateText(opts: {
   prompt: string;
   temperature?: number;
 }): Promise<LlmResult<string>> {
-  const ai = gemini();
+  const ai = geminiClient();
   const model = process.env.MAKIS_GEMINI_MODEL ?? "gemini-2.5-flash";
-
   const fullPrompt = `${opts.system}\n\n${opts.prompt}`;
   const response = await ai.models.generateContent({
     model,
     contents: fullPrompt,
     config: { temperature: opts.temperature ?? 0.7 },
   });
-
-  return {
-    data: response.text ?? "",
-    usage: { model: `gemini:${model}`, tokens_in: 0, tokens_out: 0 },
-  };
+  return { data: response.text ?? "", usage: { model: `gemini:${model}`, tokens_in: 0, tokens_out: 0 } };
 }
 
 // ---------------------------------------------------------------------------
-// Principal: intenta OpenCode, si falla cae a Gemini
+// Cadena de intentos: OpenCode → OpenRouter → Gemini
 // ---------------------------------------------------------------------------
 
 export async function generateObject<T extends z.ZodTypeAny>(opts: {
@@ -124,10 +121,10 @@ export async function generateObject<T extends z.ZodTypeAny>(opts: {
 }): Promise<LlmResult<z.infer<T>>> {
   const model = MODELS[opts.task];
 
-  // 1. Intentar OpenCode
+  // 1. Intentar OpenCode Zen
   if (process.env.OPENCODE_API_KEY) {
     try {
-      const completion = await client().chat.completions.parse({
+      const completion = await zenClient().chat.completions.parse({
         model,
         temperature: opts.temperature ?? 0.4,
         messages: [
@@ -136,26 +133,45 @@ export async function generateObject<T extends z.ZodTypeAny>(opts: {
         ],
         response_format: zodResponseFormat(opts.schema, opts.schemaName),
       });
-
       const parsed = completion.choices[0]?.message?.parsed;
       if (parsed) {
         return {
           data: parsed as z.infer<T>,
-          usage: {
-            model,
-            tokens_in: completion.usage?.prompt_tokens ?? 0,
-            tokens_out: completion.usage?.completion_tokens ?? 0,
-          },
+          usage: { model, tokens_in: completion.usage?.prompt_tokens ?? 0, tokens_out: completion.usage?.completion_tokens ?? 0 },
         };
       }
     } catch (e) {
-      console.error("[llm:opencode] Error, intentando Gemini:", (e as Error).message);
+      console.error("[llm:opencode] Error:", (e as Error).message);
     }
   }
 
-  // 2. Fallback a Gemini
-  const result = await geminiGenerateObject<z.infer<T>>(opts);
-  return result as LlmResult<z.infer<T>>;
+  // 2. Intentar OpenRouter
+  if (process.env.OPENROUTER_API_KEY) {
+    try {
+      const completion = await openrouterClient().chat.completions.parse({
+        model,
+        temperature: opts.temperature ?? 0.4,
+        messages: [
+          { role: "system", content: opts.system },
+          { role: "user", content: opts.prompt },
+        ],
+        response_format: zodResponseFormat(opts.schema, opts.schemaName),
+      });
+      const parsed = completion.choices[0]?.message?.parsed;
+      if (parsed) {
+        return {
+          data: parsed as z.infer<T>,
+          usage: { model: `or:${model}`, tokens_in: completion.usage?.prompt_tokens ?? 0, tokens_out: completion.usage?.completion_tokens ?? 0 },
+        };
+      }
+    } catch (e) {
+      console.error("[llm:openrouter] Error:", (e as Error).message);
+    }
+  }
+
+  // 3. Fallback a Gemini
+  console.error("[llm] Todos los providers fallaron, usando Gemini");
+  return geminiGenerateObject<z.infer<T>>(opts) as Promise<LlmResult<z.infer<T>>>;
 }
 
 export async function generateText(opts: {
@@ -166,10 +182,10 @@ export async function generateText(opts: {
 }): Promise<LlmResult<string>> {
   const model = MODELS[opts.task];
 
-  // 1. Intentar OpenCode
+  // 1. Intentar OpenCode Zen
   if (process.env.OPENCODE_API_KEY) {
     try {
-      const completion = await client().chat.completions.create({
+      const completion = await zenClient().chat.completions.create({
         model,
         temperature: opts.temperature ?? 0.7,
         messages: [
@@ -177,23 +193,42 @@ export async function generateText(opts: {
           { role: "user", content: opts.prompt },
         ],
       });
-
       const content = completion.choices[0]?.message?.content;
       if (content) {
         return {
           data: content,
-          usage: {
-            model,
-            tokens_in: completion.usage?.prompt_tokens ?? 0,
-            tokens_out: completion.usage?.completion_tokens ?? 0,
-          },
+          usage: { model, tokens_in: completion.usage?.prompt_tokens ?? 0, tokens_out: completion.usage?.completion_tokens ?? 0 },
         };
       }
     } catch (e) {
-      console.error("[llm:opencode] Error, intentando Gemini:", (e as Error).message);
+      console.error("[llm:opencode] Error:", (e as Error).message);
     }
   }
 
-  // 2. Fallback a Gemini
+  // 2. Intentar OpenRouter
+  if (process.env.OPENROUTER_API_KEY) {
+    try {
+      const completion = await openrouterClient().chat.completions.create({
+        model,
+        temperature: opts.temperature ?? 0.7,
+        messages: [
+          { role: "system", content: opts.system },
+          { role: "user", content: opts.prompt },
+        ],
+      });
+      const content = completion.choices[0]?.message?.content;
+      if (content) {
+        return {
+          data: content,
+          usage: { model: `or:${model}`, tokens_in: completion.usage?.prompt_tokens ?? 0, tokens_out: completion.usage?.completion_tokens ?? 0 },
+        };
+      }
+    } catch (e) {
+      console.error("[llm:openrouter] Error:", (e as Error).message);
+    }
+  }
+
+  // 3. Fallback a Gemini
+  console.error("[llm] Todos los providers fallaron, usando Gemini");
   return geminiGenerateText(opts);
 }
