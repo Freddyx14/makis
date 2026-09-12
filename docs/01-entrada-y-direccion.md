@@ -175,10 +175,10 @@ La etapa 1 está terminada cuando:
 
 ## 12. Decisiones pendientes antes de escribir código
 
-1. ¿Presupuesto total o mensual? ¿Pedimos duración?
-2. ¿Público objetivo: lo pide el formulario o lo infiere la IA?
-3. ¿Extracción vía Exa, scraping propio o ambos?
-4. ¿Cuántas páginas leemos del sitio del cliente?
-5. ¿KPIs numéricos en etapa 1 o etapa 2?
-6. ¿Regeneración del brief con instrucciones?
-7. ¿Generación síncrona o asíncrona con `jobs`?
+1. ¿Presupuesto total o mensual? ¿Pedimos duración? Total,  si ducracion
+2. ¿Público objetivo: lo pide el formulario o lo infiere la IA, pida y en caso no lo tengo busque pubblicos objeetivos?
+3. ¿Extracción vía Exa, scraping propio o ambos?,  ambos
+4. ¿Cuántas páginas leemos del sitio del cliente?, todas las que tenga
+5. ¿KPIs numéricos en etapa 1 o etapa 2, 2?
+6. ¿Regeneración del brief con instrucciones, okey, pero con historial de versiones?
+7. ¿Generación síncrona o asíncrona con `jobs`, asincrona?

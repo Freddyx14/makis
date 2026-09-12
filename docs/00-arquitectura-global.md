@@ -83,6 +83,6 @@ Tablas que se irán detallando en cada etapa:
 2. **Dónde se despliega** — afecta a cómo se gestionan los secretos y si SQLite
    sobrevive a los reinicios. Necesita respuesta antes de la etapa 4.
 3. **Qué pasa cuando un agente falla a mitad del flujo** — ¿se reintenta, se
-   queda a medias, se avisa al usuario? Afecta al diseño de `campaigns.status`.
+   queda a medias, se avisa al usuario? Afecta al diseño de `campaigns.status`. En es te caso indicar mesnaje de error y sugerir nueeva ejecucion
 4. **Idioma de los contenidos generados** — la interfaz es español; ¿los
-   contenidos también, o depende de la campaña?
+   contenidos también, o depende de la campaña? ESPAÑOLO

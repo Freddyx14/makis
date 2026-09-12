@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Makis — Laboratorio de campañas</title>
+    <link rel="icon" href="/static/mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <script defer src="/static/app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/"
+          ><img
+            src="/static/mark.svg"
+            alt=""
+            width="36"
+            height="36"
+          />makis<span>LAB</span></a
+        >
+        <div class="workspace">
+          <div class="workspace-icon">M</div>
+          <div>Mi laboratorio<small>Workspace de la demo</small></div>
+          <span class="muted">⌄</span>
+        </div>
+        <p class="nav-label">ESPACIO DE TRABAJO</p>
+        <button class="nav-item active" id="workspace-nav">
+          <span>▦</span> Laboratorio de campañas
+        </button>
+        <button class="nav-item" id="architecture-open">
+          <span>◇</span> Arquitectura del proyecto
+        </button>
+        <div class="nav-label campaigns-heading">
+          MIS CAMPAÑAS<button id="sidebar-new" aria-label="Nueva campaña">
+            ＋
+          </button>
+        </div>
+        <div id="campaign-list" class="campaign-list">
+          <p class="sidebar-empty">
+            Tus ideas empiezan aquí.<br />Crea tu primera campaña.
+          </p>
+        </div>
+        <div class="sidebar-bottom">
+          <div class="agent-mini">
+            <span class="online-dot"></span><span>Director · Etapa 01</span>
+          </div>
+          <p>De una idea a un brief<br />que se puede poner en marcha.</p>
+          <button id="config-open" class="nav-item">
+            <span>⚙</span> Conexiones y acceso
+          </button>
+          <div class="profile">
+            <span>ME</span>
+            <div>Mi sesión<small>Campañas privadas del navegador</small></div>
+          </div>
+        </div>
+      </aside>
+      <div class="main-shell">
+        <header class="topbar">
+          <div>
+            <span class="muted">Workspace</span
+            ><span class="crumb">/</span>Laboratorio de campañas
+          </div>
+          <button id="all-campaigns" class="button secondary">
+            Mis campañas
+          </button>
+        </header>
+        <main>
+          <section class="page-heading">
+            <div>
+              <p class="eyebrow">TU IDEA, CON DIRECCIÓN</p>
+              <h1>El inicio de una gran campaña.</h1>
+              <p class="subtitle">
+                Dale contexto al Director y convierte tu idea en un brief listo
+                para revisar.
+              </p>
+            </div>
+            <button id="new-campaign" class="button secondary">
+              ＋ Nueva campaña
+            </button>
+          </section>
+          <section class="pipeline" aria-label="Etapas del proyecto">
+            <div class="stage current">
+              <span class="step-no">01</span>
+              <div>
+                Entrada y dirección<small>Definimos el punto de partida</small>
+              </div>
+              <span class="stage-state">ACTIVA</span>
+            </div>
+            <div class="stage">
+              <span class="step-no">02</span>
+              <div>Investigación<small>Próximamente</small></div>
+            </div>
+            <div class="stage">
+              <span class="step-no">03</span>
+              <div>Contenido<small>Próximamente</small></div>
+            </div>
+            <div class="stage">
+              <span class="step-no">04</span>
+              <div>Ejecución<small>Próximamente</small></div>
+            </div>
+            <div class="stage">
+              <span class="step-no">05</span>
+              <div>Aprendizaje<small>Próximamente</small></div>
+            </div>
+          </section>
+          <section class="summary-row" aria-label="Resumen del laboratorio">
+            <div>
+              <span class="summary-icon">▤</span>
+              <div>
+                <strong id="count-campaigns">0</strong
+                ><span>Campañas en tu sesión</span>
+              </div>
+            </div>
+            <div>
+              <span class="summary-icon">◷</span>
+              <div>
+                <strong id="count-versions">0</strong
+                ><span>Versiones de este brief</span>
+              </div>
+            </div>
+            <div>
+              <span class="summary-icon">◎</span>
+              <div>
+                <strong id="count-gaps">—</strong
+                ><span>Puntos por investigar</span>
+              </div>
+            </div>
+            <div>
+              <span class="summary-icon green">✓</span>
+              <div>
+                <strong id="count-approved">0</strong
+                ><span>Campañas aprobadas</span>
+              </div>
+            </div>
+          </section>
+          <div class="work-grid">
+            <section class="panel intake-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-number">01 / INPUT</span>
+                  <h2>Cuéntanos tu idea</h2>
+                </div>
+                <span class="outline-icon">↗</span>
+              </div>
+              <p class="panel-description">
+                El punto de partida para entender tu negocio.
+              </p>
+              <form id="campaign-form">
+                <label for="url">Web de tu negocio <span>*</span></label
+                ><input
+                  id="url"
+                  name="url"
+                  type="url"
+                  placeholder="https://tunegocio.com"
+                  required
+                  maxlength="2048"
+                />
+                <p class="field-hint">
+                  Extraeremos el contexto y exploraremos sus páginas internas.
+                </p>
+                <label>¿Qué quieres conseguir? <span>*</span></label>
+                <div class="goal-options">
+                  <label
+                    ><input
+                      type="radio"
+                      name="objetivo"
+                      value="leads"
+                      checked
+                    /><span>◎ &nbsp; Leads</span></label
+                  >
+                  <label
+                    ><input type="radio" name="objetivo" value="ventas" /><span
+                      >↗ &nbsp; Ventas</span
+                    ></label
+                  >
+                  <label
+                    ><input
+                      type="radio"
+                      name="objetivo"
+                      value="awareness"
+                    /><span>◉ &nbsp; Marca</span></label
+                  >
+                  <label
+                    ><input type="radio" name="objetivo" value="trafico" /><span
+                      >↗ &nbsp; Tráfico</span
+                    ></label
+                  >
+                </div>
+                <input
+                  name="detalle"
+                  id="detalle"
+                  aria-label="Detalle del objetivo"
+                  placeholder="Por ejemplo: aumentar las suscripciones online"
+                  maxlength="2000"
+                />
+                <div class="form-row budget-row">
+                  <div>
+                    <label for="presupuesto"
+                      >Presupuesto total <span>*</span></label
+                    ><input
+                      id="presupuesto"
+                      name="presupuesto"
+                      type="number"
+                      min="0.01"
+                      max="100000000"
+                      step="0.01"
+                      placeholder="2,500.00"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="moneda">Moneda</label
+                    ><select id="moneda" name="moneda">
+                      <option value="PEN">PEN · S/</option>
+                      <option value="USD">USD · $</option>
+                      <option value="EUR">EUR · €</option>
+                    </select>
+                  </div>
+                </div>
+                <label for="duracion"
+                  >Duración de la campaña <span>*</span></label
+                >
+                <div class="unit-input">
+                  <input
+                    id="duracion"
+                    name="duracion_semanas"
+                    type="number"
+                    min="1"
+                    max="104"
+                    value="4"
+                    required
+                  /><span>semanas</span>
+                </div>
+                <label for="publico"
+                  >Público objetivo
+                  <span class="optional">Opcional</span></label
+                ><textarea
+                  id="publico"
+                  name="publico"
+                  rows="2"
+                  placeholder="¿A quién te gustaría llegar?"
+                  maxlength="2000"
+                ></textarea>
+                <p class="field-hint">
+                  Si aún no lo tienes claro, el Director propondrá una
+                  hipótesis.
+                </p>
+                <label for="notas"
+                  >Notas y restricciones
+                  <span class="optional">Opcional</span></label
+                ><textarea
+                  id="notas"
+                  name="notas"
+                  rows="2"
+                  placeholder="Tono, ubicación, cosas que quieres evitar…"
+                  maxlength="3000"
+                ></textarea>
+                <details class="manual-details">
+                  <summary>Usar una descripción manual del negocio</summary>
+                  <label for="manual"
+                    >¿Qué haces, qué vendes y qué te hace diferente?</label
+                  ><textarea
+                    id="manual"
+                    rows="4"
+                    maxlength="12000"
+                    placeholder="Si no podemos leer tu web, este contexto permite continuar."
+                  ></textarea>
+                </details>
+                <div class="form-footer">
+                  <button
+                    class="button primary full"
+                    type="submit"
+                    id="generate-button"
+                  >
+                    Generar brief maestro <span>→</span>
+                  </button>
+                  <p class="secure-note">
+                    ◈ &nbsp; Tú revisas y apruebas antes de avanzar.
+                  </p>
+                </div>
+              </form>
+            </section>
+            <section class="panel output-panel">
+              <div class="output-heading">
+                <div class="director-title">
+                  <div class="director-avatar">✳</div>
+                  <div>
+                    <h2>Director <span>IA</span></h2>
+                    <p id="provider-label">Preparando el laboratorio…</p>
+                  </div>
+                </div>
+                <span id="status-badge" class="badge neutral">Por empezar</span>
+              </div>
+              <nav class="tabs" aria-label="Análisis del brief">
+                <button class="tab active" data-tab="brief">
+                  Brief maestro</button
+                ><button class="tab" data-tab="sources">
+                  Fuentes <span id="source-count">0</span></button
+                ><button class="tab" data-tab="history">
+                  Historial <span id="version-count">0</span></button
+                ><button class="tab" data-tab="trace">Trazabilidad</button>
+              </nav>
+              <div
+                id="job-box"
+                class="job-box hidden"
+                role="status"
+                aria-live="polite"
+              >
+                <div class="job-title">
+                  <span class="spinner"></span
+                  ><strong id="job-message"></strong>
+                </div>
+                <progress id="job-progress" max="100" value="0"></progress>
+              </div>
+              <div id="action-notice" class="notice hidden" role="status"></div>
+              <div id="tab-content" class="tab-content">
+                <div class="empty-state">
+                  <div class="brief-illustration">
+                    <div class="paper-top">
+                      <span class="tiny-mark">✳</span><span>BRIEF MAESTRO</span
+                      ><span>01</span>
+                    </div>
+                    <div class="paper-line long"></div>
+                    <div class="paper-line medium"></div>
+                    <div class="paper-box">
+                      <i></i>
+                      <div><span></span><span></span></div>
+                      <b>✓</b>
+                    </div>
+                    <div class="paper-line"></div>
+                    <div class="paper-line short"></div>
+                    <div class="paper-seal">✳</div>
+                  </div>
+                  <p class="eyebrow">DE CONTEXTO A CLARIDAD</p>
+                  <h3>Tu próxima campaña<br />empieza con un buen brief.</h3>
+                  <p>
+                    Completa los datos de tu negocio. Aquí podrás<br />explorar,
+                    ajustar y aprobar la dirección propuesta.
+                  </p>
+                  <button id="try-example" class="button secondary">
+                    Explorar con un ejemplo <span>↗</span></button
+                  ><span class="example-caption"
+                    >Negocio ficticio · sin llamadas a APIs</span
+                  >
+                </div>
+              </div>
+              <div class="output-footer">
+                <span class="online-dot"></span> Etapa 01
+                <span class="footer-separator">/</span> Revisión humana antes de
+                continuar
+              </div>
+            </section>
+          </div>
+          <footer class="page-footer">
+            <span><strong>makis</strong> &nbsp; Ideas que toman dirección.</span
+            ><span>Laboratorio de campañas · Etapa 01 de 05</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+    <div id="toast" role="status" aria-live="polite" class="toast hidden"></div>
+    <dialog id="info-dialog">
+      <div class="dialog-top">
+        <h2 id="dialog-title"></h2>
+        <button id="dialog-close" aria-label="Cerrar">×</button>
+      </div>
+      <div id="dialog-body"></div>
+    </dialog>
+    <dialog id="login-dialog">
+      <span class="section-number">BIENVENIDO A MAKIS</span>
+      <h2>Entra a tu laboratorio</h2>
+      <p>Introduce la contraseña de acceso a la demo.</p>
+      <form id="login-form">
+        <label for="password">Contraseña</label
+        ><input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+        <p id="login-error" role="alert"></p>
+        <button class="button primary full">Entrar →</button>
+      </form>
+    </dialog>
+  </body>
+</html>
