@@ -55,6 +55,32 @@ export async function creator(
     throw new Error("No hay estrategia previa");
   }
 
+  // Contexto completo del negocio para generar contenido relevante
+  const brandName = ctx.brief.profile.brand_name;
+  const offer = ctx.brief.profile.offer;
+  const categories = ctx.brief.profile.categories ?? [];
+  const audience = ctx.brief.profile.audience_signals ?? [];
+  const siteText = (prev?.data as any)?.siteText?.slice(0, 2000) ?? "";
+  const findings = (prev?.data as any)?.findings ?? [];
+  const competitors = (prev?.data as any)?.competitors ?? [];
+
+  const businessContext = `
+## Negocio: ${brandName}
+- Oferta principal: ${offer}
+- Categorías: ${categories.join(", ")}
+- Audiencia objetivo: ${audience.join(", ")}
+- URL: ${ctx.workspace.url}
+
+## Contenido del sitio
+${siteText}
+
+## Hallazgos clave del mercado
+${findings.slice(0, 5).map((f: any) => `- ${f.claim}`).join("\n")}
+
+## Competidores
+${competitors.slice(0, 3).map((c: any) => `- ${c.name}: ${c.positioning}`).join("\n")}
+`.trim();
+
   const pieces: ContentPiece[] = [];
   let totalTokensIn = 0;
   let totalTokensOut = 0;
@@ -80,21 +106,26 @@ export async function creator(
         try {
           const result = await generateText({
             task: "synthesize",
-            system: `Eres un copywriter experto. Creas contenido de marketing que convierte.
-Reglas:
-- Escribe en español
-- Sé directo y persuasivo
+            system: `Eres el copywriter de ${brandName}. Creas contenido de marketing específico para ESTE negocio, no genérico.
+Reglas CRÍTICAS:
+- Escribe SOLO sobre ${brandName} y su oferta: ${offer}
+- Menciona la marca por nombre en el contenido
+- Adapta el tono al canal (Instagram: casual, LinkedIn: profesional, Email: directo)
 - Incluye un CTA claro
-- Adapta el tono al canal
-- Para anuncios, indica claramente que es un MOCK/DEMO`,
-            prompt: `Campaña: ${strategy.campaign}
-Oferta: ${strategy.offer}
-Canal: ${plan.channel}
-Tipo: ${plan.kind}
-Personas: ${(strategy.personas ?? []).map((p) => p.name).join(", ")}
+- Para anuncios de Google/Meta, indica que es MOCK/DEMO
+- NUNCA uses textos genéricos como "nuestros servicios" sin contexto
+- Responde en español`,
+            prompt: `${businessContext}
 
-Genera UNA pieza de contenido para este canal y tipo.`,
-            temperature: 0.8,
+## Estrategia
+- Campaña: ${strategy.campaign}
+- Oferta: ${strategy.offer}
+- Canal: ${plan.channel}
+- Tipo de pieza: ${plan.kind}
+- Buyer personas: ${(strategy.personas ?? []).map((p: any) => `${p.name}: ${p.description}`).join("; ")}
+
+Genera UNA pieza de contenido ESPECÍFICA para ${brandName} en el canal ${plan.channel}.`,
+            temperature: 0.7,
           });
 
           totalTokensIn += result.usage.tokens_in;

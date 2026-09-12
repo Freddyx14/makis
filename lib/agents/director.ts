@@ -175,6 +175,11 @@ export async function runPipeline(
     const strategy = strategyResult.data as Strategy;
     await saveStrategy(strategy);
 
+    // Inyectar datos de investigación en el strategyResult para que creator los use
+    (strategyResult as any).siteText = (researchResult.data as any).siteText;
+    (strategyResult as any).findings = (researchResult.data as any).findings;
+    (strategyResult as any).competitors = (researchResult.data as any).competitors;
+
     // Artefacto: Doc de estrategia
     if (folderId) {
       await createArtifact(
