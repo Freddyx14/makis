@@ -25,6 +25,7 @@ function Header() {
           <span className="font-serif text-lg tracking-wide text-brand-light">Makis OS</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <Link href="/laboratorio" className="text-brand-light/80 hover:text-brand-light">Laboratorio de campañas</Link>
           <a href="#como-funciona" className="text-brand-light/80 hover:text-brand-light transition-colors">
             Cómo funciona
           </a>

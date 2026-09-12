@@ -1,4 +1,22 @@
 # Mark AI — Product Requirements Document
+
+### Implemented campaign laboratory — 2026-09-12
+
+The Next.js `/laboratorio` route turns campaign specifications
+[01](docs/01-entrada-y-direccion.md) through [05](docs/05-analitica-y-optimizacion.md)
+into a reviewable five-stage demo. It preserves the private SQLite campaigns,
+requires an approved brief before research, and never publishes externally.
+It is distinct from the teammate's Supabase workspace workflow.
+
+Research and structured LLM generation have opt-in real adapters; the default
+example is explicitly fictional. Strategy selection, content editing, approvals,
+mock scheduling/execution, manual metrics and simulation-based reports are
+persisted. Simulation learnings have low confidence, not market-evidence status.
+The brief is locked once research exists. Landing drafts are not public pages.
+Image, email, social/Meta connectors, lead capture and richer analytics remain
+follow-ups; see the [implementation coverage](README.md#current-coverage-and-limits)
+and [change record](docs/changes/2026-09-12-next-campaign-laboratory.md).
+
 ## The agentic operating environment for agency founders
 
 > **Version:** 6.3.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)

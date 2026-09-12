@@ -36,6 +36,9 @@ def init():
           id TEXT PRIMARY KEY, owner TEXT NOT NULL, input TEXT NOT NULL,
           status TEXT NOT NULL, created_at TEXT NOT NULL);
         CREATE INDEX IF NOT EXISTS campaigns_owner ON campaigns(owner);
+        CREATE TABLE IF NOT EXISTS lab_state (
+          campaign_id TEXT PRIMARY KEY REFERENCES campaigns(id),
+          version INTEGER NOT NULL, payload TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS briefs (
           id INTEGER PRIMARY KEY, campaign_id TEXT NOT NULL REFERENCES campaigns(id),
           version INTEGER NOT NULL, contenido TEXT NOT NULL, source TEXT NOT NULL,

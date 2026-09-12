@@ -1,4 +1,36 @@
 # Makis — Technical Implementation Guide
+
+### Next.js laboratory API bridge — 2026-09-12
+
+`app/laboratorio/page.tsx` renders the client campaign cockpit.
+`app/api/lab/[...path]/route.ts` proxies allowlisted session/login/campaign routes
+to server-only `LAB_API_URL`. It forwards the signed HTTP-only laboratory cookie,
+checks mutation origins, limits request size and returns JSON without forwarding
+the legacy page CSP. Without a configured password it rejects non-local hosts.
+Use a trusted HTTPS deployment and the same password configuration in both apps.
+The existing teammate Workspace contracts and Supabase APIs are not modified.
+
+`GET /api/campaigns/{id}/workflow` returns private persisted state with `version`.
+`POST` on that route accepts `{action, expected_version, ...actionFields}`;
+Pydantic rejects extra/invalid fields, and the server checks ownership, brief
+approval, prerequisites, active jobs and optimistic concurrency. Research,
+strategies, fusion, content, regeneration, landing draft and report run as jobs;
+the existing detail endpoint exposes jobs and agent traces. Other mutations are
+transactional. Stage state is stored in additive `lab_state` rows in SQLite.
+
+The single-process lifespan task checks approved scheduled non-email pieces every
+60 seconds. It records mock executions only, including stable campaign/piece/version
+idempotency keys and copied payloads; manual execution uses the same contract.
+Executed pieces cannot be edited/regenerated. Brief mutation is blocked after
+research to avoid stale downstream state. Simulator/manual rows are labeled by
+origin, and manual input replaces only manual/simulated rows for its channels.
+
+`META_MCP_URL` and `META_ACCESS_TOKEN` in `.env.example` are reserved server-only
+values; no MCP discovery, Meta calls or token storage UI is active. Do not pass a
+token to an unknown MCP server. Obtain the teammate's verified server URL, auth
+contract, tool list and scopes before implementing that adapter.
+See [README coverage](README.md#current-coverage-and-limits) for remaining gaps.
+
 ## CopilotKit + Google Workspace MCP Integration
 
 This guide provides starter code snippets and architecture blueprints for **Team Maki Acevichado** (Joel, Diego, Milu, Freddy).

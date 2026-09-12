@@ -18,6 +18,7 @@ class CampaignInput(StrictModel):
     duracion_semanas: int = Field(ge=1, le=104)
     publico: str = Field(default="", max_length=2000)
     notas: str = Field(default="", max_length=3000)
+    mercado: str = Field(default="", max_length=300)
 
     @field_validator("url")
     @classmethod

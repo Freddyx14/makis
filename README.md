@@ -1,4 +1,82 @@
-# Makis · Laboratorio de campañas
+# Mark AI · Next.js campaign laboratory
+
+The campaign laboratory now lives at `/laboratorio` in the existing Next.js app.
+The teammate's `/nueva` and `/workspace/[id]` Supabase workflow remains separate
+and unchanged. The laboratory keeps the existing private SQLite campaigns and
+FastAPI API; this is a frontend migration, not a database migration.
+
+## Start the Next.js laboratory (PowerShell)
+
+Run from `makis`, in two terminals:
+
+```powershell
+# Terminal 1 — private laboratory API, single worker
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m uvicorn webapp.app:app --host 127.0.0.1 --port 8000 --no-proxy-headers
+```
+
+```powershell
+# Terminal 2 — shared Next.js frontend
+npm.cmd ci
+npm.cmd run dev -- --hostname 127.0.0.1
+```
+
+Open [the laboratory](http://127.0.0.1:3000/laboratorio). The example is fictional
+and does not call any external API. Restart both servers after changing `.env`.
+`LAB_API_URL` defaults to `http://127.0.0.1:8000` and is server-only. Never place
+LLM, Exa, Meta, or service-role credentials in `NEXT_PUBLIC_*` variables.
+
+## Current coverage and limits
+
+- Stage 1: website/manual input, editable and versioned brief, explicit approval.
+- Stage 2: cached five-axis research; parallel strategy proposals and replies,
+  Rector arbitration, human selection/editing, up to three fusions per debate.
+- Stage 3: channel-specific copy batches, bounded Editor/Director reviews,
+  individual edits/regeneration and a structured landing **draft**.
+- Stage 4: per-piece approval, immediate **mock** execution, idempotency, and
+  a local mock scheduler checking every 60 seconds while FastAPI is running.
+- Stage 5: deterministic daily funnel simulation, manual channel overrides,
+  CPL/CAC/ROAS calculations, reports with data-origin warnings, new iterations.
+
+The demo uses rules, not an LLM: regeneration and fusion do not semantically
+apply instructions. Real structured generation requires the compatible LLM
+configuration below; real research requires Exa. There are at most 20 reserved
+search calls per campaign and no automatic search retries. Competitor discovery
+with three signals, deduplication/scoring, price/pixel scraping, image generation,
+public landing/lead capture, Resend sending, OAuth social publishing, detailed
+piece-level analytics and Chart.js visualizations are **not implemented yet**.
+Social/ad executions are always mocks; email execution is blocked, not faked.
+`META_MCP_URL` and `META_ACCESS_TOKEN` are reserved placeholders, not an active
+connector. A teammate's token alone is insufficient: we still need the MCP URL,
+authentication contract, tools and permissions. No changes are pushed by setup.
+
+Once research exists, its brief is immutable to prevent downstream stale results;
+create another campaign to change the brief. Workflow writes require an expected
+state version; old-tab edits return conflict rather than overwriting new results.
+Use one Uvicorn worker and persistent `data/`. For remote use, configure the same
+`DEMO_PASSWORD` in both servers, plus production API security described below.
+The teammate's existing endpoints have their own access model; these laboratory
+controls do not claim to secure or replace them.
+
+## Verification
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+npx.cmd tsc --noEmit
+# With both development servers running:
+.\.venv\Scripts\python.exe tests/browser_lab.py
+```
+
+Do not run `next build` against the same `.next` directory while `next dev` is
+running. See [the change record](docs/changes/2026-09-12-next-campaign-laboratory.md)
+for verification and follow-ups.
+
+---
+
+## Legacy Python frontend and stage-1 configuration
+
+The following section documents the retained legacy UI on port 8000. The new
+five-stage Next.js laboratory is described above.
 
 Web de la demo para explorar la etapa 1: entrada, contexto del negocio, Director,
 brief maestro, revisión humana, versiones y aprobación. Las etapas 2–5 aparecen

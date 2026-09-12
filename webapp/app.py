@@ -1,4 +1,5 @@
 import json
+import asyncio
 import os
 import secrets
 import time
@@ -49,7 +50,20 @@ async def lifespan(app):
     if os.getenv("APP_ENV") == "production" and (not os.getenv("DEMO_PASSWORD") or len(os.getenv("APP_SECRET", "")) < 32):
         raise RuntimeError("Producción requiere DEMO_PASSWORD y APP_SECRET de al menos 32 caracteres.")
     db.init()
-    yield
+    async def scheduler():
+        from .workflow import scheduled_mock_tick
+        while True:
+            await asyncio.sleep(60)
+            await asyncio.to_thread(scheduled_mock_tick)
+    task = asyncio.create_task(scheduler())
+    try:
+        yield
+    finally:
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
 
 
 app = FastAPI(title="Makis · Entrada y dirección", lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
@@ -133,6 +147,9 @@ def latest(conn, cid):
 
 
 def ensure_mutable(conn, cid, expected):
+    workflow = conn.execute("SELECT payload FROM lab_state WHERE campaign_id=?", (cid,)).fetchone()
+    if workflow and json.loads(workflow["payload"]).get("research"):
+        raise HTTPException(409, "Este brief ya tiene investigación asociada. Crea una nueva campaña para cambiarlo sin invalidar los resultados.")
     if conn.execute("SELECT 1 FROM jobs WHERE campaign_id=? AND status IN ('queued','running')", (cid,)).fetchone():
         raise HTTPException(409, "Hay una generación en curso. Espera a que termine.")
     current = latest(conn, cid)
@@ -256,4 +273,8 @@ def approve(cid: str, body: ApproveInput, owner=Depends(session_owner)):
             raise HTTPException(404, "Primero genera un brief.")
         conn.execute("UPDATE briefs SET aprobado_at=COALESCE(aprobado_at, ?) WHERE campaign_id=? AND version=?", (now(), cid, body.expected_version))
         conn.execute("UPDATE campaigns SET status='ready_for_research' WHERE id=?", (cid,))
-    return {"status": "ready_for_research", "message": "Brief aprobado. Etapa 2 pendiente de implementación."}
+    return {"status": "ready_for_research", "message": "Brief aprobado. Continúa con la investigación en el laboratorio."}
+
+
+from .workflow import build_router
+app.include_router(build_router(session_owner, campaign_for, latest, now, progress))

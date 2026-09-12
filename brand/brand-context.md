@@ -14,6 +14,13 @@ industry: "agency operating software"
 
 # Brand identity: Mark AI
 
+### Campaign laboratory application (2026-09-12)
+
+The `/laboratorio` module uses Mark AI naming, white card surfaces, an orange
+decision signal and explicit simulation labels. It presents campaign-specific
+review steps without renaming or replacing the teammate's existing workspace.
+Styles are scoped in `components/lab/lab.module.css`; global tokens are unchanged.
+
 ## Brand strategy
 
 ### Purpose
