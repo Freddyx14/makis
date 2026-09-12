@@ -25,7 +25,7 @@ No API, schema, permission, or external-action behavior changed. This is a visua
 
 ## Verification
 
-`npm run typecheck` passes.
+`npm run typecheck` and `npm run build` pass.
 
 ## Follow-ups or known limits
 
