@@ -1,7 +1,7 @@
 # Makis - Product Requirements Document
 ## Sistema operativo agéntico para el back-office del fundador
 
-> **Versión:** 6.0.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)  
+> **Versión:** 6.1.0 · **Hackathon:** Agents, Everywhere (AI Tinkerers 2026)
 > **Equipo:** Maki Acevichado (Joel Espinoza · Diego Celis · Miluska R. · Freddy Ñañez)  
 > **Stack:** FastAPI · OpenAI Agents SDK · Google Workspace MCP · Exa Search · Resend · SQLite · Chart.js
 
@@ -80,31 +80,47 @@ Makis crea documentos legibles, versionables y auditables:
 
 ~~~
 workspace/<empresa>/
-├── 00-perfil-empresa.md        # negocio, personas, prioridades y supuestos
-├── 01-pulso-semanal.md         # señales, riesgos y decisiones necesarias
-├── 02-clientes-y-compromisos.md# acuerdos, responsables y próximos pasos
-├── 03-caja-y-cobros.md         # facturas, caja, alertas y seguimiento
-├── 04-reuniones-y-operacion.md # agenda, preparación y tareas derivadas
-├── 05-documentos-clave.md      # contratos, propuestas y enlaces relevantes
-├── 06-decisiones.md            # decisiones aprobadas y razón
-└── 07-aprendizajes.md          # patrones para la próxima iteración
+├── account.md                  # estado actual, dueño, bloqueos y próximo hito
+├── operations/                 # pulso, reuniones, tareas y procedimientos
+├── clients/<slug>/account.md   # cada cliente, acuerdo y siguiente paso
+├── finance/                    # caja, cobros, vencimientos y supuestos
+├── documents/                  # contratos, propuestas y archivos clave
+├── decisions.md                # decisiones abiertas y cerradas con su razón
+├── activity.jsonl              # eventos y cambios cronológicos
+└── learnings.md                # patrones para la próxima iteración
 ~~~
 
 SQLite indexa artefactos, versiones, fuentes, aprobaciones y eventos. No reemplaza los documentos: permite que Makis recupere el contexto correcto y explique de dónde salió cada recomendación.
 
-### 3.4 Documentación que se ve como producto
+### 3.4 Patrones operativos que Makis adopta
+
+El producto toma inspiración de una operación documental madura, pero la simplifica para un fundador:
+
+| Patrón | Contrato de Makis | Beneficio |
+|---|---|---|
+| Un solo hogar canónico | Cada cliente, documento, decisión y métrica tiene una ubicación fuente | Evita copias que divergen |
+| Account por entidad | La empresa y cada cliente tienen un account.md con estado actual, responsable, bloqueos y próximo hito | El cockpit puede responder “qué pasa ahora” |
+| Decisiones separadas de tareas | decisions.md conserva la pregunta, dueño, opciones, impacto, decisión y razón | No se confunde una decisión pendiente con una tarea |
+| Historial de actividad | activity.jsonl registra cambios, aprobaciones y ejecuciones | Se puede explicar qué cambió y cuándo |
+| Skills con contrato | Cada skill declara entradas, salidas, permisos y verificación | El agente ejecuta un flujo repetible, no una improvisación |
+
+Una vista puede agrupar información de varios lugares, pero nunca duplica ni se vuelve fuente de verdad. Si un fundador necesita ver el cliente, su contrato y el cobro juntos, Makis muestra una vista derivada con enlaces a los originales.
+
+### 3.5 Documentación que se ve como producto
 
 La experiencia principal no es un explorador de archivos. Makis renderiza cada documento según su propósito:
 
 | Documento fuente | Vista de la UI | Acción humana |
 |---|---|---|
 | Perfil | Ficha de empresa y contexto confirmado | corregir supuestos |
+| Accounts | Estado de la empresa, cliente o proyecto | actualizar hito, dueño o bloqueo |
 | Pulso semanal | Panel de prioridades, riesgos y oportunidades | ordenar la semana |
 | Clientes y compromisos | Cola de seguimientos y responsables | aprobar seguimiento |
 | Caja y cobros | Tarjetas de vencimientos y movimiento | aprobar recordatorio |
 | Reuniones | Agenda con preparación y próximos pasos | preparar o bloquear tiempo |
 | Documentos clave | Buscador con resumen y vínculos | abrir, compartir o crear |
 | Decisiones | Registro de decisión, motivo y resultado | confirmar criterio |
+| Actividad | Línea de tiempo de cambios y ejecuciones | auditar o revertir una acción |
 
 Un cambio aprobado desde la UI actualiza el Markdown y deja una nueva versión. No existen dos fuentes de verdad.
 
@@ -150,6 +166,21 @@ La experiencia tiene tres momentos:
 
 CopilotKit puede ofrecer una capa conversacional contextual dentro del cockpit, pero no es el producto. El valor principal está en que Makis ve el estado real de la empresa y lleva al fundador a la decisión que requiere su atención.
 
+### 5.1 Biblioteca de skills operativas
+
+Makis presenta sus capacidades como skills visibles y acotadas. Una skill no es un agente misterioso: expone qué lee, qué propone, qué puede ejecutar y qué aprobación necesita.
+
+Ejemplos para el demo:
+
+| Skill | Lee | Propone | Requiere aprobación |
+|---|---|---|---|
+| Pulso del fundador | accounts, Calendar, Gmail y caja | tres prioridades de la semana | no, si solo lee |
+| Cobro pendiente | factura, acuerdo y conversación | borrador de seguimiento | sí, antes de enviar |
+| Preparar reunión | Calendar, account y documentos | agenda, contexto y próximos pasos | no, si solo prepara |
+| Registrar decisión | pulso y feedback del fundador | entrada estructurada en decisions.md | sí, antes de cerrar |
+
+Este modelo permite que el fundador sepa qué está haciendo Makis y que el equipo agregue nuevas capacidades sin convertir el cockpit en un chat genérico.
+
 ## 6. Límites y guardrails
 
 - Makis puede leer, sintetizar, preparar y recomendar dentro de las fuentes autorizadas.
@@ -175,6 +206,11 @@ makis/
 ├── services/
 │   ├── workspace_store.py       # Markdown, versiones y enlaces
 │   └── action_queue.py          # propuestas, aprobaciones y auditoría
+├── skills/
+│   ├── founder_pulse.py         # prioridades y riesgos de la semana
+│   ├── collections.py           # cobros y seguimientos propuestos
+│   ├── meeting_prep.py          # preparación contextual de reuniones
+│   └── decision_log.py          # registro de decisiones aprobado
 ├── frontend/
 │   ├── onboarding/              # URL, perfil y conexiones
 │   ├── cockpit/                 # vista operativa del fundador
@@ -189,6 +225,7 @@ makis/
 - Una URL crea un perfil de empresa y workspace visible en menos de un minuto.
 - El cockpit muestra al menos una señal de Gmail, Calendar, Drive y Sheets, o sus equivalentes deterministas de demo.
 - El fundador ve una cola priorizada de acciones con evidencia y contexto.
+- La vista de una entidad muestra su account.md, decisiones, actividad y documentos sin crear copias.
 - Una acción se edita y se aprueba; su resultado queda trazado en el Markdown correspondiente.
 - El sistema propone un aprendizaje operativo, por ejemplo un patrón de cobro tardío o una reunión que siempre requiere preparación.
 - El demo muestra que el valor depende del contexto conectado, no de una conversación aislada.
