@@ -58,11 +58,11 @@ function client(): OpenAI {
  */
 export const MODELS = {
   /** Extracción, parseo y clasificación. El 80% de las llamadas. */
-  extract: process.env.MAKIS_MODEL_EXTRACT ?? "opencode/mimo-v2.5-free",
+  extract: process.env.MAKIS_MODEL_EXTRACT ?? "mimo-v2.5-free",
   /** Estrategia, copies y redacción final. Aquí se juega el entregable. */
-  synthesize: process.env.MAKIS_MODEL_SYNTHESIZE ?? "opencode/mimo-v2.5-free",
+  synthesize: process.env.MAKIS_MODEL_SYNTHESIZE ?? "mimo-v2.5-free",
   /** Razonamiento largo, si alguna vez hace falta. */
-  reason: process.env.MAKIS_MODEL_REASON ?? "opencode/mimo-v2.5-free",
+  reason: process.env.MAKIS_MODEL_REASON ?? "mimo-v2.5-free",
 } as const;
 
 export type ModelTask = keyof typeof MODELS;
