@@ -126,6 +126,52 @@ flowchart LR
 | Privacy boundary | Team profiles avoid personal or sensitive HR data. Access follows role necessity and is auditable. |
 | Learning loop | A missed target produces an evidence-backed learning or decision proposal, not automatic changes to strategy. |
 
+### 3.6 Second Brain: company knowledge graph
+
+Mark AI includes a **Second Brain** module: a founder-facing, Obsidian-like map of the company’s knowledge. It is not a decorative network chart or a separate database. The graph is a visual and conversational view over the same linked Markdown artifacts that run the agency.
+
+The founder can explore how a client relates to a contract, campaign, meeting, decision, owner, KPI, goal, source document or open question. Clicking a node opens its readable source and its evidence trail; the graph never becomes an opaque summary with no canonical document behind it.
+
+| Node type | Examples | Canonical Markdown location |
+|---|---|---|
+| Entity | agency, client, lead, partner, team member | `company/`, `clients/`, `people/` |
+| Concept | service line, project, campaign, goal, KPI, decision, role | `company/`, `operations/`, `decisions.md` |
+| Source | meeting note, call transcript, proposal, contract, brief, report | `sources/` or linked original document |
+| Question | open decision, missing information, founder follow-up | `questions/` or `decisions.md` |
+
+Markdown `[[links]]` create graph edges. Typed frontmatter records what a node is, who owns it, its confidence, access scope, source references and last update. SQLite may index nodes and edges for fast rendering, filtering and search, but it does not become a competing source of truth.
+
+#### Second Brain experience
+
+| View | Founder outcome |
+|---|---|
+| Graph canvas | see clusters and relationships across clients, company strategy, people and work |
+| Entity page | understand one client, person, project or decision with backlinks, sources and current state |
+| Context path | answer “how is this connected?” by showing a trace such as goal → client → campaign → KPI → source |
+| Knowledge inbox | review candidate nodes, links or questions inferred from new sources before they become canonical |
+| Hot context | see the most recently changed or currently relevant nodes without loading the full graph |
+| Graph health | find broken links, orphan nodes, stale accounts and unlinked sources; never delete automatically |
+
+#### Ingestion and maintenance workflow
+
+~~~mermaid
+flowchart LR
+    A["Approved source or document"] --> B["Extract entities, concepts, sources and questions"]
+    B --> C["Create or propose linked Markdown nodes"]
+    C --> D["Update index and hot context"]
+    D --> E["Index nodes and edges for UI"]
+    E --> F["Founder explores graph or asks a question"]
+    F --> G["Graph health lint and learning proposal"]
+~~~
+
+1. Ingest only authorized sources and never infer facts not contained in a source.
+2. Create or update nodes using a typed Markdown schema and generous `[[links]]`.
+3. Refresh the index and hot context after each accepted source change.
+4. Lint broken links and orphans, but report them rather than deleting content.
+5. Keep client, company and role access boundaries when rendering nodes or traversing relationships.
+
+The initial demo graph can use deterministic sample nodes from the company profile, a client, a goal, a meeting and a campaign. Production graph ingestion starts read-only and becomes write-capable only through reviewed diffs.
+
 ## 4. One platform, departments with different depth
 
 The default view is for the founder: a simple surface to ask, decide and see the entire agency. It should not expose departmental production complexity by default.
@@ -179,6 +225,7 @@ Approved UI changes update the related Markdown and write a new version. There a
 | Decisions separate from tasks | `decisions.md` stores question, owner, options, impact and rationale | decisions are not mistaken for tasks |
 | Activity history | `activity.jsonl` records changes, approvals and execution | explain what changed and when |
 | Contracted skills | every skill declares input, output, permission and verification | repeatable flows rather than improvisation |
+| Linked knowledge | typed Markdown nodes use `[[links]]` to connect entities, concepts, sources and questions | graph exploration remains explainable and source-backed |
 
 ## 6. Product experience
 
@@ -202,6 +249,9 @@ The founder can ask about clients, sales, finance, tax, contracts, delivery, cam
 | Cash pulse | receivables, expenses, invoices and dates | cash position, risk and next actions | no, read-only |
 | Goal review | strategy, goals, KPIs, initiatives and recent activity | progress review, evidence gaps and proposed decisions | no, read-only |
 | Capacity review | people profiles, roles, workload and client commitments | overload risk, ownership gap or hiring proposal | no, read-only |
+| Knowledge ingest | authorized source, node schema and workspace scope | linked entity, concept, source and question proposals | draft only |
+| Knowledge query | graph index and scoped Markdown nodes | answer with nodes, backlinks and source path | read-only |
+| Graph maintenance | index, hot context and link map | broken-link, orphan and stale-node report | read-only |
 
 ### 6.2 Focus mode by client or project
 
@@ -245,6 +295,7 @@ Agents are specialized workers, not independent decision-makers. An orchestrator
 | People and Capacity Agent | identify ownership gaps, workload risks and hiring proposals | access sensitive HR records or make employment decisions |
 | Documenter | write approved changes to canonical Markdown and append activity | overwrite a canonical source without an approved diff |
 | Analyst | compare outcomes with goals and KPIs, then propose a learning | alter targets or strategy automatically |
+| Knowledge Curator | extract and link scoped entities, concepts, sources and open questions | invent facts, bypass access scopes or delete nodes automatically |
 
 ### 6.5 Skill contract and required skills
 
@@ -264,6 +315,9 @@ Every skill is versioned and declares its input schema, allowed sources, output 
 | `contract-draft` | approved template and deal data | legal draft with missing-field flags | draft only | template version and fields are traced |
 | `campaign-runbook` | client, brand, objective, budget | brief, plan, production queue and measurement plan | draft only | budget and approval gates are explicit |
 | `outcome-learning` | approved outcome and KPI delta | learning entry and proposed adjustment | propose only | observation is separated from inference |
+| `knowledge-ingest` | authorized document or transcript | typed nodes, links and update proposals | draft only | every assertion links to source |
+| `knowledge-query` | scoped graph and Markdown vault | cited answer, relationship path and backlinks | read-only | no node outside access scope is traversed |
+| `graph-maintain` | index, hot context and link map | refreshed index plus lint report | read-only | broken links and orphans are reported, never deleted |
 
 ### 6.6 Hooks and event lifecycle
 
@@ -279,6 +333,7 @@ Hooks keep the system current without creating hidden autonomous behavior. They 
 | `goal.review_due` | goal review date arrives | assemble KPI evidence and progress summary | owner decides continue, adjust or pause |
 | `approval.granted` | founder approves a proposal | write approved Markdown diff and append activity | execution only if the approved action is external |
 | `outcome.recorded` | approved action has result | link result to KPI and draft learning | founder accepts or rejects learning |
+| `source.accepted` | a source is approved for knowledge use | create proposed nodes, backlinks and hot-context refresh | founder approves any canonical write |
 
 ### 6.7 Workflow definitions
 
@@ -308,6 +363,7 @@ MCPs are adapters to authorized external tools. Mark AI uses the least privilege
 | Gemini | structured generation and reasoning | API key on server only | profile extraction, synthesis and draft generation | output remains a proposal |
 | Resend | create outbound email send request | server-only API key | approved email delivery | only after explicit approval |
 | Meta Ads | read account and create paused campaign artifacts | scoped account access | approved campaign planning and execution | budget, publish and status changes require approval |
+| Markdown graph store | read and write scoped Markdown nodes plus link index | workspace-scoped filesystem access | canonical Second Brain nodes and graph indexing | writes require reviewed diff |
 
 The implementation should add connectors in this order: Google read-only context → Supabase application state → Gemini structured generation → approved Gmail drafts → Drive/Calendar/Sheets scoped writes → Resend → Meta Ads. No connector is required for the deterministic demo path.
 
@@ -332,6 +388,7 @@ mark-ai/
 ├── hooks/                       # event handlers and derived-state refresh
 ├── workflows/                   # resumable department state machines
 ├── mcp/                         # connector capability and permission adapters
+├── knowledge/                   # node schema, graph index, hot context and lint
 ├── modules/campaigns/           # end-to-end client campaign workflow
 ├── frontend/                    # onboarding, cockpit, review and documents
 ├── workspaces/
