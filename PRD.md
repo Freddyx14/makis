@@ -181,6 +181,31 @@ Ejemplos para el demo:
 
 Este modelo permite que el fundador sepa qué está haciendo Makis y que el equipo agregue nuevas capacidades sin convertir el cockpit en un chat genérico.
 
+### 5.2 Modo de trabajo por cliente o proyecto
+
+Un fundador no opera solo la empresa en abstracto. Opera clientes, proyectos, proveedores y decisiones que no deben contaminarse entre sí. Makis debe ofrecer un modo de enfoque inspirado en el ciclo cargar, trabajar y cerrar:
+
+| Momento | Capacidad de Makis | Regla de producto |
+|---|---|---|
+| Abrir contexto | El fundador elige un cliente o proyecto. Makis carga primero su account.md y después el plan, la actividad reciente, los compromisos y los documentos más relevantes. | Solo lectura. La pantalla entrega un briefing breve antes de proponer trabajo. |
+| Trabajar en foco | Las skills leen únicamente el workspace abierto y sus fuentes autorizadas. | Un contexto activo a la vez para evitar que información o acciones de un cliente aparezcan en otro. |
+| Cerrar contexto | Makis resume lo hecho, propone actualizar estado actual, actividad, decisiones, pendientes y siguiente hito. | Nada se escribe ni se ejecuta sin revisión del fundador. |
+| Retomar | La siguiente sesión abre el account.md actualizado y el handoff más reciente. | El usuario no debe redescubrir el estado ni explicar otra vez el trabajo anterior. |
+
+La interfaz puede ofrecer estas capacidades como comandos claros:
+
+- **Abrir cliente:** carga un briefing con quién es, estado actual, qué espera esa persona, pendiente interno, bloqueos y archivos clave.
+- **Cerrar sesión de cliente:** prepara el snapshot de estado, agrega el registro cronológico y propaga solo los cambios que realmente ocurrieron.
+- **Dejar handoff:** escribe un punto de retome breve con pendientes, decisiones, artefactos y los primeros pasos de la próxima sesión.
+
+El diseño separa tres artefactos que suelen mezclarse:
+
+1. **Account:** fotografía actual y corta de una entidad.
+2. **Actividad:** historia cronológica de qué pasó.
+3. **Handoff:** instrucciones de retome para una persona o sesión futura.
+
+Esta separación es importante para el fundador: puede preguntar “qué está bloqueado hoy” sin leer toda la historia, y luego abrir la evidencia si necesita entender el porqué.
+
 ## 6. Límites y guardrails
 
 - Makis puede leer, sintetizar, preparar y recomendar dentro de las fuentes autorizadas.
@@ -226,6 +251,8 @@ makis/
 - El cockpit muestra al menos una señal de Gmail, Calendar, Drive y Sheets, o sus equivalentes deterministas de demo.
 - El fundador ve una cola priorizada de acciones con evidencia y contexto.
 - La vista de una entidad muestra su account.md, decisiones, actividad y documentos sin crear copias.
+- El fundador puede abrir un cliente, recibir un briefing read-only y cerrarlo con estado, actividad y handoff propuestos.
+- Makis impide que una skill use información de dos clientes o proyectos a la vez salvo que el fundador abra una vista de cartera explícita.
 - Una acción se edita y se aprueba; su resultado queda trazado en el Markdown correspondiente.
 - El sistema propone un aprendizaje operativo, por ejemplo un patrón de cobro tardío o una reunión que siempre requiere preparación.
 - El demo muestra que el valor depende del contexto conectado, no de una conversación aislada.
