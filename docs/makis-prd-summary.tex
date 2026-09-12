@@ -1,0 +1,160 @@
+%!TEX program = lualatex
+\documentclass{loopmind-doc}
+
+\doclang{es}
+\doctype{Resumen de producto}
+\doctitle{Makis\newline PRD en una mirada}
+\docsubtitle{Qué construye Makis, cómo funciona y qué debe demostrar en el hackathon.}
+\docclient{Equipo Maki Acevichado}
+\docdate{Septiembre 2026}
+\docversion{1.0}
+
+\usetikzlibrary{positioning,arrows.meta}
+\setlength{\headheight}{20pt}
+
+\newcommand{\phase}[3]{%
+\begin{tcolorbox}[colback=lm-surface,colframe=lm-border,boxrule=.45pt,arc=2mm,
+left=4mm,right=4mm,top=3.5mm,bottom=3.5mm]
+{\datafont\bfseries\fontsize{17pt}{17pt}\selectfont\textcolor{lm-accent}{#1}}\hspace{7pt}%
+{\headingfont\bfseries\fontsize{11pt}{13pt}\selectfont\color{lm-black}#2}\par\vspace{3pt}
+{\fontsize{9pt}{13pt}\selectfont\color{lm-secondary}#3}
+\end{tcolorbox}}
+
+\begin{document}
+\makecover
+
+\sectionlabel{Visión}
+\section{La tesis}
+
+\begin{callouttitled}{En una frase}
+Makis transforma la URL de una empresa en un workspace de GTM investigado, documentado, visual y gobernable por una persona.
+\end{callouttitled}
+
+El problema no es que falten modelos que escriban. El problema es que el contexto del negocio está disperso: sitio web, competidores, estrategia, piezas y resultados viven en lugares distintos. El dueño termina copiando y pegando entre herramientas antes de poder decidir algo.
+
+Makis resuelve tres cosas a la vez:
+\begin{itemize}
+  \item \textbf{Descubre:} usa la URL como la primera evidencia del negocio.
+  \item \textbf{Estructura:} convierte evidencia en documentos, estrategia y piezas.
+  \item \textbf{Gobierna:} deja al humano revisar, corregir y aprobar antes de ejecutar.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[node distance=5mm and 6mm, every node/.style={align=center}]
+\node[rounded corners=3pt, fill=lm-black, text=white, minimum width=38mm, minimum height=17mm, font=\bfseries\small] (site) {Sitio web\\de la empresa};
+\node[rounded corners=3pt, fill=lm-accent, text=white, minimum width=42mm, minimum height=17mm, font=\bfseries\small, right=of site] (makis) {Makis\\lee y organiza};
+\node[rounded corners=3pt, fill=lm-accent-tint, draw=lm-accent, minimum width=42mm, minimum height=17mm, font=\bfseries\small, right=of makis] (workspace) {Workspace\\para operar};
+\draw[-{Latex[length=2mm]}, thick, color=lm-accent] (site) -- (makis);
+\draw[-{Latex[length=2mm]}, thick, color=lm-accent] (makis) -- (workspace);
+\end{tikzpicture}
+\end{center}
+
+\section{El flujo de valor}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5mm, every node/.style={align=center}]
+\foreach \name/\label [count=\i] in {url/URL,investiga/Investiga,crea/Crea,revisa/Revisa,mide/Mide} {
+  \node[rounded corners=2pt, fill=lm-surface, draw=lm-border, minimum width=26mm, minimum height=14mm, font=\bfseries\scriptsize] (\name) at ({(\i-1)*28mm},0) {\i. \\ \label};
+}
+\draw[-{Latex[length=1.8mm]}, thick, color=lm-accent] (url) -- (investiga);
+\draw[-{Latex[length=1.8mm]}, thick, color=lm-accent] (investiga) -- (crea);
+\draw[-{Latex[length=1.8mm]}, thick, color=lm-accent] (crea) -- (revisa);
+\draw[-{Latex[length=1.8mm]}, thick, color=lm-accent] (revisa) -- (mide);
+\draw[-{Latex[length=1.8mm]}, thick, color=lm-accent] (mide.south) to[out=-80,in=-100,looseness=.7] node[below,font=\scriptsize\color{lm-secondary}]{aprendizaje} (investiga.south);
+\end{tikzpicture}
+\end{center}
+
+\sectionlabel{Sistema}
+\section{Las cinco fases}
+
+\phase{01}{Descubrimiento desde la URL}{Entrada: URL, objetivo y presupuesto. Makis extrae la oferta, categorías, tono y activos públicos. Salida: perfil del negocio y brief pendientes de confirmación.}
+\phase{02}{Investigación y estrategia}{Exa y la lectura web encuentran competidores, tendencias y oportunidades. La estrategia fija audiencia, oferta, canales, mensajes y KPIs.}
+\phase{03}{Plan y creatividades}{El creador produce prioridades, plan de contenido, copies, emails, anuncios, prompts, imágenes y una landing inicial.}
+\phase{04}{Revisión y ejecución humana}{El operador edita en línea, regenera con feedback y usa controles explícitos: Aprobar, Editar o Rechazar. Resend puede ejecutar el correo; Ads se demuestran como mocks.}
+\phase{05}{Resultados y aprendizaje}{Las métricas reales o simuladas producen leads, CPL, CAC y ROAS. El sistema propone el siguiente experimento y deja trazabilidad de la decisión.}
+
+\section{El workspace es el producto}
+
+\begin{center}
+\begin{tikzpicture}[
+item/.style={rounded corners=2pt, fill=lm-surface, draw=lm-border, minimum width=115mm, minimum height=8mm, align=left, font=\small}
+]
+\node[item] (a) {00-brief.md \hfill negocio, objetivo y supuestos confirmados};
+\node[item, below=2mm of a] (b) {01-investigacion.md \hfill fuentes, competidores y hallazgos};
+\node[item, below=2mm of b] (c) {02-estrategia.md \hfill audiencia, oferta, canales y KPIs};
+\node[item, below=2mm of c] (d) {03-plan-de-contenido.md \hfill piezas, prioridades y calendario};
+\node[item, below=2mm of d] (e) {04-creatividades.md \hfill copy, prompts y aprobación};
+\node[item, below=2mm of e] (f) {05-resultados.md \hfill métricas, aprendizaje y próximo experimento};
+\end{tikzpicture}
+\end{center}
+
+\sectionlabel{Experiencia}
+\section{Una fuente de verdad, dos experiencias}
+
+Markdown es durable, versionable, exportable y auditable. La UI no compite con él: lo convierte en la forma adecuada para decidir.
+
+\begin{tabularx}{\textwidth}{>{\bfseries}p{25mm}p{40mm}X}
+\toprule
+& \textbf{Documento fuente} & \textbf{Vista en la interfaz} \\
+\midrule
+Contexto & Brief del negocio & Ficha para confirmar o corregir \\
+Evidencia & Investigación & Tarjetas de competidores y fuentes \\
+Dirección & Estrategia & Tablero de audiencia, oferta y KPIs \\
+Producción & Creatividades & Studio para editar y aprobar \\
+Aprendizaje & Resultados & Gráficos y próximo experimento \\
+\bottomrule
+\end{tabularx}
+
+\vspace{12pt}
+\begin{center}
+\begin{tikzpicture}[node distance=12mm, every node/.style={align=center}]
+\node[rounded corners=3pt, fill=lm-black, text=white, minimum width=44mm, minimum height=19mm, font=\bfseries\small] (md) {Markdown\\fuente de verdad};
+\node[rounded corners=3pt, fill=lm-accent, text=white, minimum width=44mm, minimum height=19mm, font=\bfseries\small, right=of md] (ui) {UI renderizada\\para decidir};
+\draw[-{Latex[length=2.5mm]}, thick, color=lm-accent] (md) -- node[above,font=\scriptsize\color{lm-secondary}]{renderiza} (ui);
+\draw[-{Latex[length=2.5mm]}, thick, color=lm-accent] (ui.south) to[out=-100,in=-80] node[below,font=\scriptsize\color{lm-secondary}]{edita y versiona} (md.south);
+\end{tikzpicture}
+\end{center}
+
+\section{Arquitectura y responsabilidades}
+
+\begin{tabularx}{\textwidth}{>{\bfseries}p{46mm}X}
+\toprule
+\textbf{Capa} & \textbf{Responsabilidad} \\
+\midrule
+FastAPI + director & Orquestar onboarding y convertir URL en brief validable \\
+Investigador + Exa & Extraer web, buscar mercado y guardar fuentes \\
+Estratega + creador & Convertir hallazgos en dirección y activos de campaña \\
+Workspace Markdown & Mantener documentos, versiones, decisiones y assets \\
+SQLite & Indexar artefactos, aprobaciones, relaciones y eventos \\
+UI + CopilotKit & Mostrar estado contextual y guiar decisiones \\
+Analista + Chart.js & Medir, explicar y preparar la siguiente iteración \\
+\bottomrule
+\end{tabularx}
+
+\vspace{12pt}
+\begin{callouttitled}{Roles del equipo}
+\textbf{Joel:} orquestación, SQLite, analítica y aprendizaje. \quad
+\textbf{Diego:} URL, Exa e investigación. \quad
+\textbf{Milu:} onboarding, cockpit, renderizado y revisión humana. \quad
+\textbf{Freddy:} producto, demo y pitch.
+\end{callouttitled}
+
+\sectionlabel{Demo}
+\section{Qué debe probar el hackathon}
+
+\begin{callout}
+\begin{itemize}
+  \item Una URL real o preconfigurada crea un perfil y workspace en menos de un minuto.
+  \item Al menos tres documentos Markdown aparecen como módulos de producto, no como texto plano.
+  \item Una edición desde la interfaz actualiza el documento fuente y queda versionada.
+  \item Una creatividad se aprueba y se ejecuta por Resend o mediante una simulación clara.
+  \item El dashboard identifica un aprendizaje y lo conecta con el siguiente experimento.
+\end{itemize}
+\end{callout}
+
+\begin{tcolorbox}[colback=lm-black,colframe=lm-black,arc=2mm,left=7mm,right=7mm,top=7mm,bottom=7mm]
+{\headingfont\bfseries\fontsize{16pt}{22pt}\selectfont\color{white}
+Makis no es una caja de chat. Entra por la URL de tu negocio, crea el sistema de trabajo y deja al humano gobernar cada decisión.}
+\end{tcolorbox}
+
+\end{document}
